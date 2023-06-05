@@ -58,7 +58,20 @@ public class DurabilityRenderer {
     }
 
     public static int getRGBDurabilityForDisplay(double dur) {
-        return Color.HSBtoRGB(Math.max(0.0F, (float) dur) / 3.0F, 1.0F, 1.0F);
+        if (!DuraDisplayConfig.Durability_UseColorThresholds)
+            return Color.HSBtoRGB(Math.max(0.0F, (float) dur) / 3.0F, 1.0F, 1.0F);
+        else {
+            double durability = dur * 100;
+            if (durability <= DuraDisplayConfig.Durability_ColorThresholds[0]) {
+                return 0xFF0000;
+            } else if (durability
+                >= DuraDisplayConfig.Durability_ColorThresholds[DuraDisplayConfig.Durability_ColorThresholds.length
+                    - 1]) {
+                        return 0x55FF00;
+                    } else {
+                        return 0XFFD500;
+                    }
+        }
     }
 
     private static List<ItemStackOverlay> handleDefault(@NotNull ItemStack stack) {
