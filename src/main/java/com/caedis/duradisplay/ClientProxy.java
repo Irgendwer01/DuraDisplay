@@ -1,6 +1,6 @@
 package com.caedis.duradisplay;
 
-import com.caedis.duradisplay.config.Config;
+import com.caedis.duradisplay.config.DuraDisplayConfig;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -18,7 +18,7 @@ public class ClientProxy {
 
     // postInit "Handle interaction with other mods, complete your setup based on this." (Remove if not needed)
     public void postInit(FMLPostInitializationEvent event) {
-        Config.loadConfig();
+        DuraDisplayConfig.loadConfig();
     }
 
 }

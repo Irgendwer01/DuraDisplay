@@ -4,7 +4,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 import org.lwjgl.opengl.GL11;
 
-import com.caedis.duradisplay.config.Config;
+import com.caedis.duradisplay.config.DuraDisplayConfig;
 
 public abstract class ItemStackOverlay {
 
@@ -80,7 +80,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public void Render(FontRenderer fontRenderer, int xPosition, int yPosition, float zLevel) {
-            if (!Config.Durability_PercentageWhenFull && this.isFull) return;
+            if (!DuraDisplayConfig.Durability_PercentageWhenFull && this.isFull) return;
             super.Render(fontRenderer, xPosition, yPosition, zLevel);
         }
 
@@ -91,7 +91,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public int getLocation() {
-            return Config.Durability_PercentageLocation;
+            return DuraDisplayConfig.Durability_PercentageLocation;
         }
     }
 
@@ -99,7 +99,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public void Render(FontRenderer fontRenderer, int xPosition, int yPosition, float zLevel) {
-            if (!Config.Charge_PercentageWhenFull && this.isFull) return;
+            if (!DuraDisplayConfig.Charge_PercentageWhenFull && this.isFull) return;
             super.Render(fontRenderer, xPosition, yPosition, zLevel);
         }
 
@@ -110,7 +110,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public int getLocation() {
-            return Config.Charge_PercentageLocation;
+            return DuraDisplayConfig.Charge_PercentageLocation;
         }
     }
 }

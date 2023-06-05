@@ -5,10 +5,10 @@ import java.io.File;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Configuration;
 
-import cpw.mods.fml.common.Loader;
+import crazypants.enderio.config.Config;
 import gregtech.GT_Mod;
 
-public class Config {
+public class DuraDisplayConfig {
 
     public static final String CATEGORY_CHARGE = "charge";
     public static final String CATEGORY_DURABILITY = "durability";
@@ -46,20 +46,27 @@ public class Config {
     }
 
     public static void reloadConfigObject() {
-        Durability_Enable = config
-            .getBoolean("Durability_Enable", Config.CATEGORY_DURABILITY, Durability_Enable, "Enable durability module");
+        Durability_Enable = config.getBoolean(
+            "Durability_Enable",
+            DuraDisplayConfig.CATEGORY_DURABILITY,
+            Durability_Enable,
+            "Enable durability module");
 
-        Durability_HideBar = config
-            .getBoolean("Durability_HideBar", Config.CATEGORY_DURABILITY, Durability_HideBar, "Hide durability bar");
+        Durability_HideBar = config.getBoolean(
+            "Durability_HideBar",
+            DuraDisplayConfig.CATEGORY_DURABILITY,
+            Durability_HideBar,
+            "Hide durability bar");
 
         Charge_Enable = config
-            .getBoolean("Charge_Enable", Config.CATEGORY_CHARGE, Charge_Enable, "Enable charge module");
+            .getBoolean("Charge_Enable", DuraDisplayConfig.CATEGORY_CHARGE, Charge_Enable, "Enable charge module");
 
-        Charge_HideBar = config.getBoolean("Charge_HideBar", Config.CATEGORY_CHARGE, Charge_HideBar, "Hide charge bar");
+        Charge_HideBar = config
+            .getBoolean("Charge_HideBar", DuraDisplayConfig.CATEGORY_CHARGE, Charge_HideBar, "Hide charge bar");
 
         Durability_PercentageLocation = config.getInt(
             "Durability_PercentageLocation",
-            Config.CATEGORY_DURABILITY,
+            DuraDisplayConfig.CATEGORY_DURABILITY,
             Durability_PercentageLocation,
             1,
             9,
@@ -67,7 +74,7 @@ public class Config {
 
         Charge_PercentageLocation = config.getInt(
             "Charge_PercentageLocation",
-            Config.CATEGORY_CHARGE,
+            DuraDisplayConfig.CATEGORY_CHARGE,
             Charge_PercentageLocation,
             1,
             9,
@@ -75,13 +82,13 @@ public class Config {
 
         Durability_PercentageWhenFull = config.getBoolean(
             "Durability_PercentageWhenFull",
-            Config.CATEGORY_DURABILITY,
+            DuraDisplayConfig.CATEGORY_DURABILITY,
             Durability_PercentageWhenFull,
             "Show durability percentage when item is undamaged/full");
 
         Charge_PercentageWhenFull = config.getBoolean(
             "Charge_PercentageWhenFull",
-            Config.CATEGORY_CHARGE,
+            DuraDisplayConfig.CATEGORY_CHARGE,
             Charge_PercentageWhenFull,
             "Show charge percentage when item is full");
 
@@ -89,9 +96,12 @@ public class Config {
             config.save();
         }
 
-        if (Loader.isModLoaded("gregtech")) {
-            GT_Mod.gregtechproxy.mRenderItemDurabilityBar = !(Durability_Enable && Durability_HideBar);
-            GT_Mod.gregtechproxy.mRenderItemChargeBar = !(Charge_Enable && Charge_HideBar);
-        }
+        // Gregtech Bars
+        GT_Mod.gregtechproxy.mRenderItemDurabilityBar = !(Durability_Enable && Durability_HideBar);
+        GT_Mod.gregtechproxy.mRenderItemChargeBar = !(Charge_Enable && Charge_HideBar);
+
+        // EnderIO Bars
+        Config.renderChargeBar = !(Charge_Enable && Charge_HideBar);
+        Config.renderDurabilityBar = !(Durability_Enable && Durability_HideBar);
     }
 }

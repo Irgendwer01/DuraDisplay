@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.caedis.duradisplay.config.Config;
+import com.caedis.duradisplay.config.DuraDisplayConfig;
 import com.caedis.duradisplay.render.DurabilityRenderer;
 
 import gregtech.api.items.GT_MetaBase_Item;
@@ -32,10 +32,11 @@ public abstract class MixinRenderItem {
             target = "Lnet/minecraft/item/Item;showDurabilityBar(Lnet/minecraft/item/ItemStack;)Z"))
     private boolean showDurabilityBar(Item item0, ItemStack stack0, FontRenderer fontRenderer,
         TextureManager textureManager, ItemStack stack, int xPosition, int yPosition, String string) {
-        if (!Config.Durability_Enable && !Config.Charge_Enable) return item0.showDurabilityBar(stack0);
+        if (!DuraDisplayConfig.Durability_Enable && !DuraDisplayConfig.Charge_Enable)
+            return item0.showDurabilityBar(stack0);
 
         DurabilityRenderer.Render(fontRenderer, stack0, xPosition, yPosition, zLevel);
-        return !Config.Durability_HideBar && item0.showDurabilityBar(stack0);
+        return !DuraDisplayConfig.Durability_HideBar && item0.showDurabilityBar(stack0);
     }
 
     // Handle GT Tools
@@ -48,7 +49,7 @@ public abstract class MixinRenderItem {
             ordinal = 0))
     private void renderItemAndEffectIntoGUI(FontRenderer fontRenderer, TextureManager textureManager, ItemStack stack,
         int xPosition, int yPosition, CallbackInfo ci) {
-        if (!Config.Durability_Enable && !Config.Charge_Enable) return;
+        if (!DuraDisplayConfig.Durability_Enable && !DuraDisplayConfig.Charge_Enable) return;
         if (stack == null || stack.getItem() == null || !(stack.getItem() instanceof GT_MetaBase_Item)) return;
 
         DurabilityRenderer.Render(fontRenderer, stack, xPosition, yPosition, zLevel);

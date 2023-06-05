@@ -15,13 +15,13 @@ public class GuiConfigDuraDisplay extends GuiConfig {
         super(
             parent,
             Lists.newArrayList(
-                new ConfigElement<>(Config.config.getCategory(Config.CATEGORY_CHARGE)),
-                new ConfigElement<>(Config.config.getCategory(Config.CATEGORY_DURABILITY))),
+                new ConfigElement<>(DuraDisplayConfig.config.getCategory(DuraDisplayConfig.CATEGORY_CHARGE)),
+                new ConfigElement<>(DuraDisplayConfig.config.getCategory(DuraDisplayConfig.CATEGORY_DURABILITY))),
             Tags.MODID,
             "general",
             false,
             false,
-            getAbridgedConfigPath(Config.config.toString()));
+            getAbridgedConfigPath(DuraDisplayConfig.config.toString()));
     }
 
 }

@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.caedis.duradisplay.config.Config;
+import com.caedis.duradisplay.config.DuraDisplayConfig;
 import com.caedis.duradisplay.utils.GTToolsInfo;
 import com.caedis.duradisplay.utils.NBTUtils;
 
@@ -36,7 +36,6 @@ public class DurabilityRenderer {
         itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
         itemHandlers.put(Item.class, DurabilityRenderer::handleDefault);
-
     }
 
     public static void Render(FontRenderer fontRenderer, ItemStack stack, int xPosition, int yPosition, float zLevel) {
@@ -63,9 +62,8 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleDefault(@NotNull ItemStack stack) {
-        if (!Config.Durability_Enable
-            || !(stack.isItemStackDamageable() && (Config.Durability_PercentageWhenFull || stack.isItemDamaged())))
-            return null;
+        if (!DuraDisplayConfig.Durability_Enable || !(stack.isItemStackDamageable()
+            && (DuraDisplayConfig.Durability_PercentageWhenFull || stack.isItemDamaged()))) return null;
         assert stack.getItem() != null;
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
@@ -89,7 +87,7 @@ public class DurabilityRenderer {
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
 
-        if (Config.Charge_Enable) {
+        if (DuraDisplayConfig.Charge_Enable) {
             Long[] elecStats = gtItem.getElectricStats(stack);
             if (elecStats != null) {
                 ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
@@ -100,7 +98,7 @@ public class DurabilityRenderer {
             }
         }
 
-        if (Config.Durability_Enable) {
+        if (DuraDisplayConfig.Durability_Enable) {
             ItemStackOverlay durabilityOverlay = new ItemStackOverlay.DurabilityOverlay();
             GTToolsInfo gti = NBTUtils.getToolInfo(stack);
             if (gti.getRemainingPaint() > 0) {
@@ -122,7 +120,7 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleEnergyContainer(@NotNull ItemStack stack) {
-        if (!Config.Charge_Enable || !(stack.hasTagCompound() && stack.getTagCompound()
+        if (!DuraDisplayConfig.Charge_Enable || !(stack.hasTagCompound() && stack.getTagCompound()
             .hasKey("Energy"))) return null; // because TiCon tools have the interface
         IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
         assert eci != null;
@@ -142,7 +140,7 @@ public class DurabilityRenderer {
 
     // handles all other EIO items
     private static List<ItemStackOverlay> handleDarkSteelItems(@NotNull ItemStack stack) {
-        if (!Config.Charge_Enable || !stack.hasTagCompound()) return null;
+        if (!DuraDisplayConfig.Charge_Enable || !stack.hasTagCompound()) return null;
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
         NBTTagCompound nbt = stack.getTagCompound();
