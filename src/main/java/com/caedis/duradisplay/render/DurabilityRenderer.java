@@ -23,6 +23,7 @@ import crazypants.enderio.item.darksteel.IDarkSteelItem;
 import gregtech.api.items.GT_MetaBase_Item;
 import ic2.api.item.ElectricItem;
 import ic2.core.item.tool.ItemElectricTool;
+import vazkii.botania.common.item.brew.ItemBrewBase;
 
 public class DurabilityRenderer {
 
@@ -38,6 +39,7 @@ public class DurabilityRenderer {
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
         itemHandlers.put(ItemElectricTool.class, DurabilityRenderer::handleItemElectricTool);
         itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
+        itemHandlers.put(ItemBrewBase.class, DurabilityRenderer::handleBotaniaBrew);
         itemHandlers.put(Item.class, DurabilityRenderer::handleDefault);
     }
 
@@ -156,6 +158,23 @@ public class DurabilityRenderer {
         chargeOverlay.isFull = charge == 100.0;
         chargeOverlay.value = nf.format(charge) + "%";
         overlays.add(chargeOverlay);
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleBotaniaBrew(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Durability_Enable) return null;
+        ItemBrewBase brew = ((ItemBrewBase) stack.getItem());
+        assert brew != null;
+
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        ItemStackOverlay dOverlay = new ItemStackOverlay.DurabilityOverlay();
+        double swigs = brew.getSwigsLeft(stack);
+        dOverlay.isFull = swigs == brew.getMaxDamage();
+        dOverlay.value = nf.format(swigs);
+        dOverlay.color = 0xFFFFFF;
+        overlays.add(dOverlay);
 
         return overlays;
     }
