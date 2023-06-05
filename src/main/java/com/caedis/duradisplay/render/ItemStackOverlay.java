@@ -8,18 +8,15 @@ import com.caedis.duradisplay.config.DuraDisplayConfig;
 
 public abstract class ItemStackOverlay {
 
-    public boolean isFull = false;
+    public boolean isFull;
     public int color;
     public String value;
-    protected int x, y;
 
     public abstract int getColor();
 
     public abstract int getLocation();
 
     public void Render(FontRenderer fontRenderer, int xPosition, int yPosition, float zLevel) {
-        int stringWidth = fontRenderer.getStringWidth(value);
-        SetXY(xPosition, yPosition, stringWidth);
         GL11.glPushMatrix();
         GL11.glScalef(0.5F, 0.5F, 0.5F);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -27,7 +24,8 @@ public abstract class ItemStackOverlay {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glTranslatef(0, 0, zLevel + 1000);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        fontRenderer.drawString(value, x, y, getColor(), true);
+        int stringWidth = fontRenderer.getStringWidth(value);
+        fontRenderer.drawString(value, getX(xPosition, stringWidth), getY(yPosition), getColor(), true);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -35,43 +33,32 @@ public abstract class ItemStackOverlay {
         GL11.glPopMatrix();
     }
 
-    private void SetXY(int xPosition, int yPosition, int stringWidth) {
+    private int getX(int xPosition, int stringWidth) {
         switch (getLocation()) {
-            case 1 -> { // bottom left
-                x = (xPosition * 2) + 2;
-                y = (yPosition * 2) + 22;
+            case 1, 4, 7 -> { // left
+                return (xPosition * 2) + 2;
             }
-            default -> { // bottom center
-                x = ((xPosition + 8) * 2 + 1 + stringWidth / 2 - stringWidth);
-                y = (yPosition * 2) + 22;
+            // 2, 5, 8
+            default -> { // center
+                return ((xPosition + 8) * 2 + 1 + stringWidth / 2 - stringWidth);
             }
-            case 3 -> { // bottom right
-                x = (xPosition + 20) * 2 - stringWidth - 10;
-                y = (yPosition * 2) + 22;
+            case 3, 6, 9 -> { // right
+                return (xPosition + 20) * 2 - stringWidth - 10;
             }
-            case 4 -> { // center left
-                x = (xPosition * 2) + 2;
-                y = (yPosition * 2) + 11;
+        }
+    }
+
+    private int getY(int yPosition) {
+        switch (getLocation()) {
+            case 7, 8, 9 -> { // top
+                return (yPosition * 2) + 2;
             }
-            case 5 -> { // center
-                x = ((xPosition + 8) * 2 + 1 + stringWidth / 2 - stringWidth);
-                y = (yPosition * 2) + 11;
+            case 4, 5, 6 -> { // center
+                return (yPosition * 2) + 11;
             }
-            case 6 -> { // center right
-                x = (xPosition + 20) * 2 - stringWidth - 10;
-                y = (yPosition * 2) + 11;
-            }
-            case 7 -> { // top left
-                x = (xPosition * 2) + 2;
-                y = (yPosition * 2) + 2;
-            }
-            case 8 -> { // top center
-                x = ((xPosition + 8) * 2 + 1 + stringWidth / 2 - stringWidth);
-                y = (yPosition * 2) + 2;
-            }
-            case 9 -> { // top right
-                x = (xPosition + 20) * 2 - stringWidth - 10;
-                y = (yPosition * 2) + 2;
+            // 1, 2, 3
+            default -> { // bottom
+                return (yPosition * 2) + 22;
             }
         }
     }
