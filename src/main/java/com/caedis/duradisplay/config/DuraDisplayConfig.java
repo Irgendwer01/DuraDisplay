@@ -5,10 +5,10 @@ import java.util.Arrays;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 import crazypants.enderio.config.Config;
 import gregtech.GT_Mod;
-import net.minecraftforge.common.config.Property;
 
 public class DuraDisplayConfig {
 
@@ -99,14 +99,13 @@ public class DuraDisplayConfig {
             Durability_UseColorThresholds,
             "Use the stated color thresholds instead of the default gradient coloring.");
 
-        Property colorThresh = config
-            .get(
-                CATEGORY_DURABILITY,
-                "ColorThresholds",
-                Durability_ColorThresholds,
-                "List of numbers in ascending order from 0-100 that set the thresholds for durability color mapping. "
-                    + "Colors are from Red -> Yellow -> Green with Red being less than or equal to the first value "
-                    + "and Green being greater than or equal to the last value");
+        Property colorThresh = config.get(
+            CATEGORY_DURABILITY,
+            "ColorThresholds",
+            Durability_ColorThresholds,
+            "List of numbers in ascending order from 0-100 that set the thresholds for durability color mapping. "
+                + "Colors are from Red -> Yellow -> Green with Red being less than or equal to the first value "
+                + "and Green being greater than or equal to the last value");
         Durability_ColorThresholds = colorThresh.getDoubleList();
 
         // clean up whatever the user inputs

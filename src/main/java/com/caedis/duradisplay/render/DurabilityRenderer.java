@@ -29,8 +29,6 @@ public class DurabilityRenderer {
     private static final Map<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> itemHandlers;
     private static final NumberFormat nf = NumberFormat.getNumberInstance();
 
-    //public static
-
     static {
         nf.setRoundingMode(RoundingMode.FLOOR);
         nf.setMaximumFractionDigits(0);
@@ -48,11 +46,15 @@ public class DurabilityRenderer {
         ItemStackOverlay.DurabilityOverlay durabilityOverlay = null;
         ItemStackOverlay.ChargeOverlay chargeOverlay = null;
 
-        Optional<Class<?>> key = itemHandlers.keySet().stream().filter(clazz -> clazz.isInstance(stack.getItem())).findFirst();
+        Optional<Class<?>> key = itemHandlers.keySet()
+            .stream()
+            .filter(clazz -> clazz.isInstance(stack.getItem()))
+            .findFirst();
 
         if (!key.isPresent()) return;
 
-        List<ItemStackOverlay> list = itemHandlers.get(key.get()).apply(stack);
+        List<ItemStackOverlay> list = itemHandlers.get(key.get())
+            .apply(stack);
         if (list != null) {
             for (ItemStackOverlay overlay : list) {
                 if (overlay instanceof ItemStackOverlay.DurabilityOverlay dOverlay) {
