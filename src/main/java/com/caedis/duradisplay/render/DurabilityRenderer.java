@@ -21,11 +21,15 @@ import com.caedis.duradisplay.utils.NBTUtils;
 import cofh.api.energy.IEnergyContainerItem;
 import crazypants.enderio.item.darksteel.IDarkSteelItem;
 import gregtech.api.items.GT_MetaBase_Item;
+import ic2.api.item.ElectricItem;
+import ic2.core.item.tool.ItemElectricTool;
 
 public class DurabilityRenderer {
 
     private static final Map<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> itemHandlers;
     private static final NumberFormat nf = NumberFormat.getNumberInstance();
+
+    //public static
 
     static {
         nf.setRoundingMode(RoundingMode.FLOOR);
@@ -33,28 +37,34 @@ public class DurabilityRenderer {
 
         itemHandlers = new LinkedHashMap<>();
         itemHandlers.put(GT_MetaBase_Item.class, DurabilityRenderer::handleGregTech);
-        itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
+        itemHandlers.put(ItemElectricTool.class, DurabilityRenderer::handleItemElectricTool);
+        itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
         itemHandlers.put(Item.class, DurabilityRenderer::handleDefault);
     }
 
     public static void Render(FontRenderer fontRenderer, ItemStack stack, int xPosition, int yPosition, float zLevel) {
-        List<ItemStackOverlay> overlays = new ArrayList<>();
+        assert stack.getItem() != null;
+        ItemStackOverlay.DurabilityOverlay durabilityOverlay = null;
+        ItemStackOverlay.ChargeOverlay chargeOverlay = null;
 
-        for (Map.Entry<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> entry : itemHandlers.entrySet()) {
-            if (entry.getKey()
-                .isInstance(stack.getItem())) {
-                List<ItemStackOverlay> list = entry.getValue()
-                    .apply(stack);
-                if (list != null) {
-                    overlays.addAll(list);
+        Optional<Class<?>> key = itemHandlers.keySet().stream().filter(clazz -> clazz.isInstance(stack.getItem())).findFirst();
+
+        if (!key.isPresent()) return;
+
+        List<ItemStackOverlay> list = itemHandlers.get(key.get()).apply(stack);
+        if (list != null) {
+            for (ItemStackOverlay overlay : list) {
+                if (overlay instanceof ItemStackOverlay.DurabilityOverlay dOverlay) {
+                    durabilityOverlay = dOverlay;
+                } else if (overlay instanceof ItemStackOverlay.ChargeOverlay cOverlay) {
+                    chargeOverlay = cOverlay;
                 }
             }
         }
 
-        for (ItemStackOverlay overlay : overlays) {
-            overlay.Render(fontRenderer, xPosition, yPosition, zLevel);
-        }
+        if (durabilityOverlay != null) durabilityOverlay.Render(fontRenderer, xPosition, yPosition, zLevel);
+        if (chargeOverlay != null) chargeOverlay.Render(fontRenderer, xPosition, yPosition, zLevel);
     }
 
     public static int getRGBDurabilityForDisplay(double dur) {
@@ -91,7 +101,7 @@ public class DurabilityRenderer {
             Long[] elecStats = gtItem.getElectricStats(stack);
             if (elecStats != null) {
                 ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
-                double charge = ((double) gtItem.getRealCharge(stack) / elecStats[0]) * 100;
+                double charge = ((double) gtItem.getRealCharge(stack) / Math.abs(elecStats[0])) * 100;
                 chargeOverlay.isFull = charge == 100.0;
                 chargeOverlay.value = nf.format(charge) + "%";
                 overlays.add(chargeOverlay);
@@ -119,13 +129,33 @@ public class DurabilityRenderer {
         return overlays;
     }
 
-    private static List<ItemStackOverlay> handleEnergyContainer(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Charge_Enable || !(stack.hasTagCompound() && stack.getTagCompound()
-            .hasKey("Energy"))) return null; // because TiCon tools have the interface
-        IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
-        assert eci != null;
+    private static List<ItemStackOverlay> handleItemElectricTool(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Charge_Enable) return null; // because TiCon tools have the interface
+        ItemElectricTool bei = ((ItemElectricTool) stack.getItem());
+        assert bei != null;
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
+        double charge = ((double) ElectricItem.manager.getCharge(stack) / bei.getMaxCharge(stack)) * 100;
+        chargeOverlay.isFull = charge == 100.0;
+        chargeOverlay.value = nf.format(charge) + "%";
+        overlays.add(chargeOverlay);
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleEnergyContainer(@NotNull ItemStack stack) {
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+        List<ItemStackOverlay> defaultOverlays = handleDefault(stack);
+        if (defaultOverlays != null) {
+            overlays.addAll(defaultOverlays);
+        }
+
+        if (!DuraDisplayConfig.Charge_Enable || !(stack.hasTagCompound() && stack.getTagCompound()
+            .hasKey("Energy"))) return overlays; // because TiCon tools have the interface
+        IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
+        assert eci != null;
 
         ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
         double durability = ((double) eci.getEnergyStored(stack) / eci.getMaxEnergyStored(stack)) * 100;
@@ -133,16 +163,18 @@ public class DurabilityRenderer {
         chargeOverlay.value = nf.format(durability) + "%";
         overlays.add(chargeOverlay);
 
-        // normal item durability is handled in default case
-
         return overlays;
     }
 
     // handles all other EIO items
     private static List<ItemStackOverlay> handleDarkSteelItems(@NotNull ItemStack stack) {
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+        List<ItemStackOverlay> defaultOverlays = handleDefault(stack);
+        if (defaultOverlays != null) {
+            overlays.addAll(defaultOverlays);
+        }
         if (!DuraDisplayConfig.Charge_Enable || !stack.hasTagCompound()) return null;
 
-        List<ItemStackOverlay> overlays = new ArrayList<>();
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("enderio.darksteel.upgrade.energyUpgrade")) {
             NBTTagCompound upgrade = nbt.getCompoundTag("enderio.darksteel.upgrade.energyUpgrade");
