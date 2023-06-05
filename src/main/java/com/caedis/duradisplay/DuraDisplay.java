@@ -13,7 +13,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
     version = Tags.VERSION,
     name = Tags.MODNAME,
     acceptedMinecraftVersions = "[1.7.10]",
-    dependencies = "required-after:gregtech@[5.09.43.63,);" + " required-after:EnderIO;")
+    guiFactory = "com.caedis.duradisplay.config.GuiFactory",
+    dependencies = "required-after:gregtech@[5.09.43.63,);" + " required-after:EnderIO@[2.4.18,);")
 public class DuraDisplay {
 
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
@@ -33,4 +34,5 @@ public class DuraDisplay {
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
     }
+
 }
