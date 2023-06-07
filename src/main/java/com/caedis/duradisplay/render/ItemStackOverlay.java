@@ -1,5 +1,7 @@
 package com.caedis.duradisplay.render;
 
+import java.awt.*;
+
 import net.minecraft.client.gui.FontRenderer;
 
 import org.lwjgl.opengl.GL11;
@@ -25,7 +27,19 @@ public abstract class ItemStackOverlay {
         GL11.glTranslatef(0, 0, zLevel + 1000);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         int stringWidth = fontRenderer.getStringWidth(value);
-        fontRenderer.drawString(value, getX(xPosition, stringWidth), getY(yPosition), getColor(), true);
+        int x = getX(xPosition, stringWidth);
+        int y = getY(yPosition);
+        int color = getColor();
+
+        // apply transparency
+        // color = (color & 0xFFFFFF) | (0xCC << 24);
+
+        fontRenderer.drawString(value, x + 1, y, 0);
+        fontRenderer.drawString(value, x - 1, y, 0);
+        fontRenderer.drawString(value, x, y + 1, 0);
+        fontRenderer.drawString(value, x, y - 1, 0);
+
+        fontRenderer.drawString(value, x, y, color);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
