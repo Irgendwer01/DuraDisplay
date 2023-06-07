@@ -32,7 +32,6 @@ public class DuraDisplayConfig {
     public static Configuration config = null;
 
     public static void loadConfig() {
-
         if (configLoaded) {
             return;
         }

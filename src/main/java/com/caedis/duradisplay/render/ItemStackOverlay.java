@@ -29,17 +29,13 @@ public abstract class ItemStackOverlay {
         int stringWidth = fontRenderer.getStringWidth(value);
         int x = getX(xPosition, stringWidth);
         int y = getY(yPosition);
-        int color = getColor();
-
-        // apply transparency
-        // color = (color & 0xFFFFFF) | (0xCC << 24);
 
         fontRenderer.drawString(value, x + 1, y, 0);
         fontRenderer.drawString(value, x - 1, y, 0);
         fontRenderer.drawString(value, x, y + 1, 0);
         fontRenderer.drawString(value, x, y - 1, 0);
 
-        fontRenderer.drawString(value, x, y, color);
+        fontRenderer.drawString(value, x, y, getColor());
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
