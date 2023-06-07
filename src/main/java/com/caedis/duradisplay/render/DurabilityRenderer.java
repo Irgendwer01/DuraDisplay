@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
-import java.util.function.Function;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
@@ -30,14 +29,23 @@ import vazkii.botania.common.item.brew.ItemBrewBase;
 
 public class DurabilityRenderer {
 
-    private static final Map<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> itemHandlers;
+    // private static final Map<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> itemHandlers;
+
+    // Linked so that classes are checked in order
+    private static final Map<Class<?>, ItemHandler> itemHandlers = new LinkedHashMap<>();
+
+    @FunctionalInterface
+    interface ItemHandler {
+
+        List<ItemStackOverlay> apply(ItemStack stack);
+    }
+
     private static final NumberFormat nf = NumberFormat.getNumberInstance();
 
     static {
         nf.setRoundingMode(RoundingMode.FLOOR);
         nf.setMaximumFractionDigits(0);
 
-        itemHandlers = new LinkedHashMap<>();
         itemHandlers.put(GT_MetaBase_Item.class, DurabilityRenderer::handleGregTech);
         itemHandlers.put(GT_RadioactiveCell_Item.class, DurabilityRenderer::handleGregTechRadioactiveCell);
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
