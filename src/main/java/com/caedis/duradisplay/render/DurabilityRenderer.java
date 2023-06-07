@@ -94,11 +94,11 @@ public class DurabilityRenderer {
                 return 0xFF0000;
             } else if (durability
                 >= DuraDisplayConfig.Durability_ColorThresholds[DuraDisplayConfig.Durability_ColorThresholds.length
-                - 1]) {
-                return 0x55FF00;
-            } else {
-                return 0XFFD500;
-            }
+                    - 1]) {
+                        return 0x55FF00;
+                    } else {
+                        return 0XFFD500;
+                    }
         }
     }
 
