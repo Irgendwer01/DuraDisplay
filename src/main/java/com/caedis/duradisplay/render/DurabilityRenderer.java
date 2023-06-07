@@ -21,8 +21,12 @@ import com.caedis.duradisplay.utils.NBTUtils;
 import cofh.api.energy.IEnergyContainerItem;
 import crazypants.enderio.item.darksteel.IDarkSteelItem;
 import gregtech.api.items.GT_MetaBase_Item;
+import gregtech.api.items.GT_RadioactiveCell_Item;
 import ic2.api.item.ElectricItem;
-import ic2.core.item.tool.ItemElectricTool;
+import ic2.api.item.ICustomDamageItem;
+import ic2.api.item.IElectricItem;
+import ic2.core.item.armor.ItemArmorFluidTank;
+import vazkii.botania.common.item.brew.ItemBrewBase;
 
 public class DurabilityRenderer {
 
@@ -35,9 +39,13 @@ public class DurabilityRenderer {
 
         itemHandlers = new LinkedHashMap<>();
         itemHandlers.put(GT_MetaBase_Item.class, DurabilityRenderer::handleGregTech);
+        itemHandlers.put(GT_RadioactiveCell_Item.class, DurabilityRenderer::handleGregTechRadioactiveCell);
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
-        itemHandlers.put(ItemElectricTool.class, DurabilityRenderer::handleItemElectricTool);
+        itemHandlers.put(IElectricItem.class, DurabilityRenderer::handleIElectricItem);
+        itemHandlers.put(ItemArmorFluidTank.class, DurabilityRenderer::handleItemArmorFluidTank);
+        itemHandlers.put(ICustomDamageItem.class, DurabilityRenderer::handleICustomDamageItem);
         itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
+        itemHandlers.put(ItemBrewBase.class, DurabilityRenderer::handleBotaniaBrew);
         itemHandlers.put(Item.class, DurabilityRenderer::handleDefault);
     }
 
@@ -144,9 +152,27 @@ public class DurabilityRenderer {
         return overlays;
     }
 
-    private static List<ItemStackOverlay> handleItemElectricTool(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Charge_Enable) return null; // because TiCon tools have the interface
-        ItemElectricTool bei = ((ItemElectricTool) stack.getItem());
+    private static List<ItemStackOverlay> handleGregTechRadioactiveCell(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Durability_Enable) return null;
+        GT_RadioactiveCell_Item bei = ((GT_RadioactiveCell_Item) stack.getItem());
+        assert bei != null;
+
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        ItemStackOverlay overlay = new ItemStackOverlay.DurabilityOverlay();
+        double charge = 1.0 - (((double) bei.getDamageOfStack(stack) / bei.getMaxDamageEx()));
+        overlay.color = getRGBDurabilityForDisplay(charge);
+        charge *= 100;
+        overlay.isFull = charge == 0.0;
+        overlay.value = nf.format(charge) + "%";
+        overlays.add(overlay);
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleIElectricItem(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Charge_Enable) return null;
+        IElectricItem bei = ((IElectricItem) stack.getItem());
         assert bei != null;
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
@@ -156,6 +182,59 @@ public class DurabilityRenderer {
         chargeOverlay.isFull = charge == 100.0;
         chargeOverlay.value = nf.format(charge) + "%";
         overlays.add(chargeOverlay);
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleItemArmorFluidTank(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Durability_Enable) return null;
+        ItemArmorFluidTank bei = ((ItemArmorFluidTank) stack.getItem());
+        assert bei != null;
+
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        ItemStackOverlay overlay = new ItemStackOverlay.DurabilityOverlay();
+        double charge = ((double) bei.getCharge(stack) / bei.getMaxCharge(stack));
+        overlay.color = getRGBDurabilityForDisplay(charge);
+        charge *= 100;
+        overlay.isFull = charge == 100.0;
+        overlay.value = nf.format(charge) + "%";
+        overlays.add(overlay);
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleICustomDamageItem(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Durability_Enable) return null;
+        ICustomDamageItem bei = ((ICustomDamageItem) stack.getItem());
+        assert bei != null;
+
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        ItemStackOverlay overlay = new ItemStackOverlay.DurabilityOverlay();
+        double charge = 1.0 - (((double) bei.getCustomDamage(stack) / bei.getMaxCustomDamage(stack)));
+        overlay.color = getRGBDurabilityForDisplay(charge);
+        charge *= 100;
+        overlay.isFull = charge == 0.0;
+        overlay.value = nf.format(charge) + "%";
+        overlays.add(overlay);
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleBotaniaBrew(@NotNull ItemStack stack) {
+        if (!DuraDisplayConfig.Durability_Enable) return null;
+        ItemBrewBase brew = ((ItemBrewBase) stack.getItem());
+        assert brew != null;
+
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        ItemStackOverlay dOverlay = new ItemStackOverlay.DurabilityOverlay();
+        double swigs = brew.getSwigsLeft(stack);
+        dOverlay.isFull = swigs == brew.getMaxDamage();
+        dOverlay.value = nf.format(swigs);
+        dOverlay.color = 0xFFFFFF;
+        overlays.add(dOverlay);
 
         return overlays;
     }
