@@ -29,7 +29,8 @@ import vazkii.botania.common.item.brew.ItemBrewBase;
 
 public class DurabilityRenderer {
 
-    // private static final Map<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> itemHandlers;
+    //
+    public static boolean ShouldRun = true;
 
     // Linked so that classes are checked in order
     private static final Map<Class<?>, ItemHandler> itemHandlers = new LinkedHashMap<>();
