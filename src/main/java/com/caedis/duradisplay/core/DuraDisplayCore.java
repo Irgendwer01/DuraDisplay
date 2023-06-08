@@ -18,7 +18,7 @@ public class DuraDisplayCore implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixins(Set<String> loadedCoreMods) {
-        return Arrays.asList("minecraft.MixinRenderItem");
+        return Arrays.asList("minecraft.MixinRenderItem", "minecraft.MixinGuiScreen");
     }
 
     @Override

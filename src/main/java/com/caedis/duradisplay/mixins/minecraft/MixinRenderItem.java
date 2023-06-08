@@ -32,6 +32,7 @@ public abstract class MixinRenderItem {
             target = "Lnet/minecraft/item/Item;showDurabilityBar(Lnet/minecraft/item/ItemStack;)Z"))
     private boolean showDurabilityBar(Item item0, ItemStack stack0, FontRenderer fontRenderer,
         TextureManager textureManager, ItemStack stack, int xPosition, int yPosition, String string) {
+        if (!DurabilityRenderer.ShouldRun) return item0.showDurabilityBar(stack0);
         if (!DuraDisplayConfig.Durability_Enable && !DuraDisplayConfig.Charge_Enable)
             return item0.showDurabilityBar(stack0);
 
@@ -49,6 +50,7 @@ public abstract class MixinRenderItem {
             ordinal = 0))
     private void renderItemAndEffectIntoGUI(FontRenderer fontRenderer, TextureManager textureManager, ItemStack stack,
         int xPosition, int yPosition, CallbackInfo ci) {
+        if (!DurabilityRenderer.ShouldRun) return;
         if (!DuraDisplayConfig.Durability_Enable && !DuraDisplayConfig.Charge_Enable) return;
         if (stack == null || stack.getItem() == null || !(stack.getItem() instanceof GT_MetaBase_Item)) return;
 

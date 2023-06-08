@@ -25,11 +25,14 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.item.IElectricItem;
 import ic2.core.item.armor.ItemArmorFluidTank;
+import tconstruct.library.tools.ToolCore;
+import tconstruct.library.weaponry.AmmoItem;
 import vazkii.botania.common.item.brew.ItemBrewBase;
 
 public class DurabilityRenderer {
 
-    // private static final Map<Class<?>, Function<ItemStack, List<ItemStackOverlay>>> itemHandlers;
+    //
+    public static boolean ShouldRun = true;
 
     // Linked so that classes are checked in order
     private static final Map<Class<?>, ItemHandler> itemHandlers = new LinkedHashMap<>();
@@ -49,8 +52,10 @@ public class DurabilityRenderer {
         itemHandlers.put(GT_MetaBase_Item.class, DurabilityRenderer::handleGregTech);
         itemHandlers.put(GT_RadioactiveCell_Item.class, DurabilityRenderer::handleGregTechRadioactiveCell);
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
-        itemHandlers.put(IElectricItem.class, DurabilityRenderer::handleIElectricItem);
+        itemHandlers.put(AmmoItem.class, (is -> null));
+        itemHandlers.put(ToolCore.class, DurabilityRenderer::handleToolCore);
         itemHandlers.put(ItemArmorFluidTank.class, DurabilityRenderer::handleItemArmorFluidTank);
+        itemHandlers.put(IElectricItem.class, DurabilityRenderer::handleIElectricItem);
         itemHandlers.put(ICustomDamageItem.class, DurabilityRenderer::handleICustomDamageItem);
         itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
         itemHandlers.put(ItemBrewBase.class, DurabilityRenderer::handleBotaniaBrew);
@@ -103,15 +108,16 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleDefault(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Durability_Enable || !(stack.isItemStackDamageable()
-            && (DuraDisplayConfig.Durability_PercentageWhenFull || stack.isItemDamaged()))) return null;
-        assert stack.getItem() != null;
+        Item item = stack.getItem();
+        assert item != null;
+        if (!DuraDisplayConfig.Durability_Enable
+            || !(item.isDamageable() && (DuraDisplayConfig.Durability_PercentageWhenFull || item.isDamaged(stack))))
+            return null;
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
 
         ItemStackOverlay durabilityOverlay = new ItemStackOverlay.DurabilityOverlay();
-        double durability = (1 - stack.getItem()
-            .getDurabilityForDisplay(stack));
+        double durability = (1 - item.getDurabilityForDisplay(stack));
         if (Double.isNaN(durability)) return null;
         durabilityOverlay.color = getRGBDurabilityForDisplay(durability);
         durability *= 100;
@@ -160,6 +166,37 @@ public class DurabilityRenderer {
                 overlays.add(durabilityOverlay);
             }
         }
+
+        return overlays;
+    }
+
+    private static List<ItemStackOverlay> handleToolCore(@NotNull ItemStack stack) {
+        if (!stack.hasTagCompound() || !stack.getTagCompound()
+            .hasKey("InfiTool")) return null;
+        NBTTagCompound tags = stack.getTagCompound()
+            .getCompoundTag("InfiTool");
+        List<ItemStackOverlay> overlays = new ArrayList<>();
+
+        if (tags.hasKey("Unbreaking")) {
+            if (tags.getInteger("Unbreaking") < 10) {
+                List<ItemStackOverlay> defaultOverlays = handleDefault(stack);
+                if (defaultOverlays != null) {
+                    overlays.addAll(defaultOverlays);
+                }
+            }
+        }
+
+        if (!DuraDisplayConfig.Charge_Enable || !stack.getTagCompound()
+            .hasKey("Energy")) return overlays;
+        IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
+        assert eci != null;
+
+        ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
+        double durability = ((double) eci.getEnergyStored(stack) / eci.getMaxEnergyStored(stack)) * 100;
+        if (Double.isNaN(durability)) return null;
+        chargeOverlay.isFull = durability == 100.0;
+        chargeOverlay.value = nf.format(durability) + "%";
+        overlays.add(chargeOverlay);
 
         return overlays;
     }
@@ -263,13 +300,13 @@ public class DurabilityRenderer {
         }
 
         if (!DuraDisplayConfig.Charge_Enable || !(stack.hasTagCompound() && stack.getTagCompound()
-            .hasKey("Energy"))) return overlays; // because TiCon tools have the interface
+            .hasKey("Energy"))) return overlays;
         IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
         assert eci != null;
 
         ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
         double durability = ((double) eci.getEnergyStored(stack) / eci.getMaxEnergyStored(stack)) * 100;
-        if (Double.isNaN(durability)) return null;
+        if (Double.isNaN(durability)) return overlays;
         chargeOverlay.isFull = durability == 100.0;
         chargeOverlay.value = nf.format(durability) + "%";
         overlays.add(chargeOverlay);
@@ -284,7 +321,7 @@ public class DurabilityRenderer {
         if (defaultOverlays != null) {
             overlays.addAll(defaultOverlays);
         }
-        if (!DuraDisplayConfig.Charge_Enable || !stack.hasTagCompound()) return null;
+        if (!DuraDisplayConfig.Charge_Enable || !stack.hasTagCompound()) return overlays;
 
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("enderio.darksteel.upgrade.energyUpgrade")) {
@@ -294,14 +331,12 @@ public class DurabilityRenderer {
 
             ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
             double durability = ((double) energy / capacity) * 100;
-            if (Double.isNaN(durability)) return null;
+            if (Double.isNaN(durability)) return overlays;
             chargeOverlay.isFull = durability == 100.0;
             chargeOverlay.value = nf.format(durability) + "%";
 
             overlays.add(chargeOverlay);
         }
-
-        // normal item durability is handled in default case
 
         return overlays;
     }

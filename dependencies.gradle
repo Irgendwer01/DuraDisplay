@@ -38,6 +38,7 @@ dependencies {
     api("net.industrial-craft:industrialcraft-2:2.2.828-experimental:dev")
     api("com.github.GTNewHorizons:EnderIO:2.4.18:dev")
     api("com.github.GTNewHorizons:Botania:1.9.23-GTNH:dev")
+    api("com.github.GTNewHorizons:TinkersConstruct:1.9.36-GTNH:dev")
 
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:TinkersConstruct:1.9.36-GTNH:dev")
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:GTplusplus:1.9.38:dev")
 }
