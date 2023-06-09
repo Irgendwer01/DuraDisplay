@@ -31,8 +31,8 @@ import vazkii.botania.common.item.brew.ItemBrewBase;
 
 public class DurabilityRenderer {
 
-    //
-    public static boolean ShouldRun = true;
+    // Used to prevent calls from outside actual inventories
+    public static boolean Execute = true;
 
     // Linked so that classes are checked in order
     private static final Map<Class<?>, ItemHandler> itemHandlers = new LinkedHashMap<>();
@@ -91,14 +91,14 @@ public class DurabilityRenderer {
     }
 
     public static int getRGBDurabilityForDisplay(double dur) {
-        if (!DuraDisplayConfig.Durability_UseColorThresholds)
+        if (!DuraDisplayConfig.DurabilityConfig.UseColorThreshold)
             return Color.HSBtoRGB(Math.max(0.0F, (float) dur) / 3.0F, 1.0F, 1.0F);
         else {
             double durability = dur * 100;
-            if (durability <= DuraDisplayConfig.Durability_ColorThresholds[0]) {
+            if (durability <= DuraDisplayConfig.DurabilityConfig.ColorThreshold[0]) {
                 return 0xFF0000;
             } else if (durability
-                >= DuraDisplayConfig.Durability_ColorThresholds[DuraDisplayConfig.Durability_ColorThresholds.length
+                >= DuraDisplayConfig.DurabilityConfig.ColorThreshold[DuraDisplayConfig.DurabilityConfig.ColorThreshold.length
                     - 1]) {
                         return 0x55FF00;
                     } else {
@@ -110,8 +110,8 @@ public class DurabilityRenderer {
     private static List<ItemStackOverlay> handleDefault(@NotNull ItemStack stack) {
         Item item = stack.getItem();
         assert item != null;
-        if (!DuraDisplayConfig.Durability_Enable
-            || !(item.isDamageable() && (DuraDisplayConfig.Durability_PercentageWhenFull || item.isDamaged(stack))))
+        if (!DuraDisplayConfig.DurabilityConfig.Enabled
+            || !(item.isDamageable() && (DuraDisplayConfig.DurabilityConfig.ShowWhenFull || item.isDamaged(stack))))
             return null;
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
@@ -135,7 +135,7 @@ public class DurabilityRenderer {
 
         List<ItemStackOverlay> overlays = new ArrayList<>();
 
-        if (DuraDisplayConfig.Charge_Enable) {
+        if (DuraDisplayConfig.ChargeConfig.Enabled) {
             Long[] elecStats = gtItem.getElectricStats(stack);
             if (elecStats != null) {
                 ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
@@ -148,7 +148,7 @@ public class DurabilityRenderer {
             }
         }
 
-        if (DuraDisplayConfig.Durability_Enable) {
+        if (DuraDisplayConfig.DurabilityConfig.Enabled) {
             ItemStackOverlay durabilityOverlay = new ItemStackOverlay.DurabilityOverlay();
             GTToolsInfo gti = NBTUtils.getToolInfo(stack);
             if (gti.getRemainingPaint() > 0) {
@@ -186,7 +186,7 @@ public class DurabilityRenderer {
             }
         }
 
-        if (!DuraDisplayConfig.Charge_Enable || !stack.getTagCompound()
+        if (!DuraDisplayConfig.ChargeConfig.Enabled || !stack.getTagCompound()
             .hasKey("Energy")) return overlays;
         IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
         assert eci != null;
@@ -202,7 +202,7 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleGregTechRadioactiveCell(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Durability_Enable) return null;
+        if (!DuraDisplayConfig.DurabilityConfig.Enabled) return null;
         GT_RadioactiveCell_Item bei = ((GT_RadioactiveCell_Item) stack.getItem());
         assert bei != null;
 
@@ -221,7 +221,7 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleIElectricItem(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Charge_Enable) return null;
+        if (!DuraDisplayConfig.ChargeConfig.Enabled) return null;
         IElectricItem bei = ((IElectricItem) stack.getItem());
         assert bei != null;
 
@@ -238,7 +238,7 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleItemArmorFluidTank(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Durability_Enable) return null;
+        if (!DuraDisplayConfig.DurabilityConfig.Enabled) return null;
         ItemArmorFluidTank bei = ((ItemArmorFluidTank) stack.getItem());
         assert bei != null;
 
@@ -257,7 +257,7 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleICustomDamageItem(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Durability_Enable) return null;
+        if (!DuraDisplayConfig.DurabilityConfig.Enabled) return null;
         ICustomDamageItem bei = ((ICustomDamageItem) stack.getItem());
         assert bei != null;
 
@@ -276,7 +276,7 @@ public class DurabilityRenderer {
     }
 
     private static List<ItemStackOverlay> handleBotaniaBrew(@NotNull ItemStack stack) {
-        if (!DuraDisplayConfig.Durability_Enable) return null;
+        if (!DuraDisplayConfig.DurabilityConfig.Enabled) return null;
         ItemBrewBase brew = ((ItemBrewBase) stack.getItem());
         assert brew != null;
 
@@ -299,7 +299,7 @@ public class DurabilityRenderer {
             overlays.addAll(defaultOverlays);
         }
 
-        if (!DuraDisplayConfig.Charge_Enable || !(stack.hasTagCompound() && stack.getTagCompound()
+        if (!DuraDisplayConfig.ChargeConfig.Enabled || !(stack.hasTagCompound() && stack.getTagCompound()
             .hasKey("Energy"))) return overlays;
         IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
         assert eci != null;
@@ -321,7 +321,7 @@ public class DurabilityRenderer {
         if (defaultOverlays != null) {
             overlays.addAll(defaultOverlays);
         }
-        if (!DuraDisplayConfig.Charge_Enable || !stack.hasTagCompound()) return overlays;
+        if (!DuraDisplayConfig.ChargeConfig.Enabled || !stack.hasTagCompound()) return overlays;
 
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("enderio.darksteel.upgrade.energyUpgrade")) {
