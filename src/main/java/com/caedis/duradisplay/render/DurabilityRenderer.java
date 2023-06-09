@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -63,6 +64,7 @@ public class DurabilityRenderer {
     }
 
     public static void Render(FontRenderer fontRenderer, ItemStack stack, int xPosition, int yPosition, float zLevel) {
+        if (fontRenderer == null && (fontRenderer = Minecraft.getMinecraft().fontRenderer) == null) return;
         assert stack.getItem() != null;
         ItemStackOverlay.DurabilityOverlay durabilityOverlay = null;
         ItemStackOverlay.ChargeOverlay chargeOverlay = null;
