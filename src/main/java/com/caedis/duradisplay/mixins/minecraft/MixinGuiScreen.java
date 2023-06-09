@@ -15,12 +15,12 @@ public class MixinGuiScreen {
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "drawScreen(IIF)V", at = @At("HEAD"))
     private void drawScreenStart(CallbackInfo cbi) {
-        DurabilityRenderer.ShouldRun = false;
+        DurabilityRenderer.Execute = false;
     }
 
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "drawScreen(IIF)V", at = @At("RETURN"))
     private void drawScreenEnd(CallbackInfo cbi) {
-        DurabilityRenderer.ShouldRun = true;
+        DurabilityRenderer.Execute = true;
     }
 }

@@ -13,6 +13,7 @@ public abstract class ItemStackOverlay {
     public boolean isFull;
     public int color;
     public String value;
+    public double raw_value;
 
     public abstract int getColor();
 
@@ -77,7 +78,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public void Render(FontRenderer fontRenderer, int xPosition, int yPosition, float zLevel) {
-            if (!DuraDisplayConfig.Durability_PercentageWhenFull && this.isFull) return;
+            if (!DuraDisplayConfig.DurabilityConfig.ShowWhenFull && this.isFull) return;
             super.Render(fontRenderer, xPosition, yPosition, zLevel);
         }
 
@@ -88,7 +89,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public int getLocation() {
-            return DuraDisplayConfig.Durability_PercentageLocation;
+            return DuraDisplayConfig.DurabilityConfig.Position;
         }
     }
 
@@ -96,7 +97,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public void Render(FontRenderer fontRenderer, int xPosition, int yPosition, float zLevel) {
-            if (!DuraDisplayConfig.Charge_PercentageWhenFull && this.isFull) return;
+            if (!DuraDisplayConfig.ChargeConfig.ShowWhenFull && this.isFull) return;
             super.Render(fontRenderer, xPosition, yPosition, zLevel);
         }
 
@@ -107,7 +108,7 @@ public abstract class ItemStackOverlay {
 
         @Override
         public int getLocation() {
-            return DuraDisplayConfig.Charge_PercentageLocation;
+            return DuraDisplayConfig.ChargeConfig.Position;
         }
     }
 }
