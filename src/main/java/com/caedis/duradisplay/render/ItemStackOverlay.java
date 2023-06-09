@@ -13,7 +13,6 @@ public abstract class ItemStackOverlay {
     public boolean isFull;
     public int color;
     public String value;
-    public double raw_value;
 
     public abstract int getColor();
 

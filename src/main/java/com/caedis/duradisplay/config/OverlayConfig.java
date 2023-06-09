@@ -9,7 +9,6 @@ public abstract class OverlayConfig {
 
     public boolean UseColorThreshold;
     public double[] ColorThreshold = new double[] { 15, 50 };
-    public double VisibleThreshold = 100;
 
     public static class DurabilityOverlayConfig extends OverlayConfig {
 
