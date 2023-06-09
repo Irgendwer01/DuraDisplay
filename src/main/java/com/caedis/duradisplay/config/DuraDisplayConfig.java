@@ -12,22 +12,14 @@ import gregtech.GT_Mod;
 
 public class DuraDisplayConfig {
 
+    public static OverlayConfig.DurabilityOverlayConfig DurabilityConfig = new OverlayConfig.DurabilityOverlayConfig();
+    public static OverlayConfig.ChargeOverlayConfig ChargeConfig = new OverlayConfig.ChargeOverlayConfig();
     public static final String CATEGORY_CHARGE = "charge";
     public static final String CATEGORY_DURABILITY = "durability";
 
     private static boolean configLoaded = false;
-    public static boolean Durability_Enable = true;
-    public static boolean Charge_Enable = true;
 
-    public static boolean Durability_HideBar = true;
-    public static boolean Charge_HideBar = true;
-    public static int Durability_PercentageLocation = 2;
-    public static int Charge_PercentageLocation = 8;
-    public static boolean Durability_PercentageWhenFull = false;
-    public static boolean Charge_PercentageWhenFull = false;
-
-    public static boolean Durability_UseColorThresholds = false;
-    public static double[] Durability_ColorThresholds = new double[] { 25.0, 75.0 };
+    public static boolean Enable = true;
 
     public static Configuration config = null;
 
@@ -52,78 +44,109 @@ public class DuraDisplayConfig {
 
     public static void reloadConfigObject() {
 
-        Durability_Enable = config
-            .getBoolean("Enable", DuraDisplayConfig.CATEGORY_DURABILITY, Durability_Enable, "Enable durability module");
+        Enable = config.getBoolean("Enable", Configuration.CATEGORY_GENERAL, Enable, "Enable/disable the entire mod");
 
-        Durability_HideBar = config
-            .getBoolean("HideBar", DuraDisplayConfig.CATEGORY_DURABILITY, Durability_HideBar, "Hide durability bar");
-
-        Charge_Enable = config
-            .getBoolean("Enable", DuraDisplayConfig.CATEGORY_CHARGE, Charge_Enable, "Enable charge module");
-
-        Charge_HideBar = config
-            .getBoolean("HideBar", DuraDisplayConfig.CATEGORY_CHARGE, Charge_HideBar, "Hide charge bar");
-
-        Durability_PercentageLocation = config.getInt(
-            "PercentageLocation",
+        DurabilityConfig.Enabled = config.getBoolean(
+            "Enable",
             DuraDisplayConfig.CATEGORY_DURABILITY,
-            Durability_PercentageLocation,
+            DurabilityConfig.Enabled,
+            "Enable durability module");
+
+        DurabilityConfig.RenderBar = config.getBoolean(
+            "RenderBar",
+            DuraDisplayConfig.CATEGORY_DURABILITY,
+            DurabilityConfig.RenderBar,
+            "Render durability bar");
+
+        ChargeConfig.Enabled = config
+            .getBoolean("Enable", DuraDisplayConfig.CATEGORY_CHARGE, ChargeConfig.Enabled, "Enable charge module");
+
+        ChargeConfig.RenderBar = config
+            .getBoolean("RenderBar", DuraDisplayConfig.CATEGORY_CHARGE, ChargeConfig.RenderBar, "Render charge bar");
+
+        DurabilityConfig.Position = config.getInt(
+            "Position",
+            DuraDisplayConfig.CATEGORY_DURABILITY,
+            DurabilityConfig.Position,
             1,
             9,
             "Location in item where the durability percentage will be (numpad style)");
 
-        Charge_PercentageLocation = config.getInt(
-            "PercentageLocation",
+        ChargeConfig.Position = config.getInt(
+            "Position",
             DuraDisplayConfig.CATEGORY_CHARGE,
-            Charge_PercentageLocation,
+            ChargeConfig.Position,
             1,
             9,
             "Location in item where the charge percentage will be (numpad style)");
 
-        Durability_PercentageWhenFull = config.getBoolean(
-            "PercentageWhenFull",
+        DurabilityConfig.ShowWhenFull = config.getBoolean(
+            "ShowWhenFull",
             DuraDisplayConfig.CATEGORY_DURABILITY,
-            Durability_PercentageWhenFull,
+            DurabilityConfig.ShowWhenFull,
             "Show durability percentage when item is undamaged/full");
 
-        Charge_PercentageWhenFull = config.getBoolean(
-            "PercentageWhenFull",
+        ChargeConfig.ShowWhenFull = config.getBoolean(
+            "ShowWhenFull",
             DuraDisplayConfig.CATEGORY_CHARGE,
-            Charge_PercentageWhenFull,
+            ChargeConfig.ShowWhenFull,
             "Show charge percentage when item is full");
 
-        Durability_UseColorThresholds = config.getBoolean(
-            "UseColorThresholds",
+        DurabilityConfig.UseColorThreshold = config.getBoolean(
+            "UseColorThreshold",
             DuraDisplayConfig.CATEGORY_DURABILITY,
-            Durability_UseColorThresholds,
-            "Use the stated color thresholds instead of the default gradient coloring.");
+            DurabilityConfig.UseColorThreshold,
+            "Use the color thresholds instead of the default gradient coloring.");
 
-        Property colorThresh = config.get(
+        ChargeConfig.UseColorThreshold = config.getBoolean(
+            "UseColorThreshold",
+            DuraDisplayConfig.CATEGORY_CHARGE,
+            ChargeConfig.UseColorThreshold,
+            "Use the color thresholds instead of the static blue color.");
+
+        Property dura_colorThresh = config.get(
             CATEGORY_DURABILITY,
             "ColorThresholds",
-            Durability_ColorThresholds,
+            DurabilityConfig.ColorThreshold,
             "List of numbers in ascending order from 0-100 that set the thresholds for durability color mapping. "
                 + "Colors are from Red -> Yellow -> Green with Red being less than or equal to the first value "
                 + "and Green being greater than or equal to the last value");
-        Durability_ColorThresholds = colorThresh.getDoubleList();
+        DurabilityConfig.ColorThreshold = dura_colorThresh.getDoubleList();
 
         // clean up whatever the user inputs
-        Durability_ColorThresholds = Arrays.stream(Durability_ColorThresholds)
+        DurabilityConfig.ColorThreshold = Arrays.stream(DurabilityConfig.ColorThreshold)
             .filter(num -> num >= 0.0 && num <= 100.0)
             .sorted()
             .toArray();
-        colorThresh.set(Durability_ColorThresholds);
+        dura_colorThresh.set(DurabilityConfig.ColorThreshold);
+
+        Property charge_colorThresh = config.get(
+            CATEGORY_CHARGE,
+            "ColorThresholds",
+            ChargeConfig.ColorThreshold,
+            "List of numbers in ascending order from 0-100 that set the thresholds for charge color mapping. "
+                + "Colors are from Red -> Orange -> Blue with Red being less than or equal to the first value "
+                + "and Blue being greater than or equal to the last value");
+        ChargeConfig.ColorThreshold = charge_colorThresh.getDoubleList();
+
+        // clean up whatever the user inputs
+        ChargeConfig.ColorThreshold = Arrays.stream(ChargeConfig.ColorThreshold)
+            .filter(num -> num >= 0.0 && num <= 100.0)
+            .sorted()
+            .toArray();
+        charge_colorThresh.set(ChargeConfig.ColorThreshold);
 
         if (config.hasChanged()) {
             config.save();
         }
 
         // Gregtech Bars
-        GT_Mod.gregtechproxy.mRenderItemDurabilityBar = !(Durability_Enable && Durability_HideBar);
-        GT_Mod.gregtechproxy.mRenderItemChargeBar = !(Charge_Enable && Charge_HideBar);
+        GT_Mod.gregtechproxy.mRenderItemDurabilityBar = Enable
+            && !(DurabilityConfig.Enabled && !DurabilityConfig.RenderBar);
+        GT_Mod.gregtechproxy.mRenderItemChargeBar = Enable && !(ChargeConfig.Enabled && !ChargeConfig.RenderBar);
 
         // EnderIO Bars
-        Config.renderChargeBar = !(Charge_Enable && Charge_HideBar);
-        Config.renderDurabilityBar = !(Durability_Enable && Durability_HideBar);
+        Config.renderChargeBar = Enable && !(ChargeConfig.Enabled && !ChargeConfig.RenderBar);
+        Config.renderDurabilityBar = Enable && !(DurabilityConfig.Enabled && !DurabilityConfig.RenderBar);
     }
 }

@@ -32,12 +32,13 @@ public abstract class MixinRenderItem {
             target = "Lnet/minecraft/item/Item;showDurabilityBar(Lnet/minecraft/item/ItemStack;)Z"))
     private boolean showDurabilityBar(Item item0, ItemStack stack0, FontRenderer fontRenderer,
         TextureManager textureManager, ItemStack stack, int xPosition, int yPosition, String string) {
-        if (!DurabilityRenderer.ShouldRun) return item0.showDurabilityBar(stack0);
-        if (!DuraDisplayConfig.Durability_Enable && !DuraDisplayConfig.Charge_Enable)
+        if (!DurabilityRenderer.Execute) return item0.showDurabilityBar(stack0);
+        if (!DuraDisplayConfig.Enable
+            || (!DuraDisplayConfig.DurabilityConfig.Enabled && !DuraDisplayConfig.ChargeConfig.Enabled))
             return item0.showDurabilityBar(stack0);
 
         DurabilityRenderer.Render(fontRenderer, stack0, xPosition, yPosition, zLevel);
-        return !DuraDisplayConfig.Durability_HideBar && item0.showDurabilityBar(stack0);
+        return DuraDisplayConfig.DurabilityConfig.RenderBar && item0.showDurabilityBar(stack0);
     }
 
     // Handle GT Tools
@@ -50,8 +51,8 @@ public abstract class MixinRenderItem {
             ordinal = 0))
     private void renderItemAndEffectIntoGUI(FontRenderer fontRenderer, TextureManager textureManager, ItemStack stack,
         int xPosition, int yPosition, CallbackInfo ci) {
-        if (!DurabilityRenderer.ShouldRun) return;
-        if (!DuraDisplayConfig.Durability_Enable && !DuraDisplayConfig.Charge_Enable) return;
+        if (!DurabilityRenderer.Execute) return;
+        if (!DuraDisplayConfig.DurabilityConfig.Enabled && !DuraDisplayConfig.ChargeConfig.Enabled) return;
         if (stack == null || stack.getItem() == null || !(stack.getItem() instanceof GT_MetaBase_Item)) return;
 
         DurabilityRenderer.Render(fontRenderer, stack, xPosition, yPosition, zLevel);
