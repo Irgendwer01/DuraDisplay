@@ -55,10 +55,10 @@ public class DurabilityRenderer {
         itemHandlers.put(IDarkSteelItem.class, DurabilityRenderer::handleDarkSteelItems);
         itemHandlers.put(AmmoItem.class, (is -> null));
         itemHandlers.put(ToolCore.class, DurabilityRenderer::handleToolCore);
-        itemHandlers.put(ItemArmorFluidTank.class, DurabilityRenderer::handleItemArmorFluidTank);
         itemHandlers.put(IElectricItem.class, DurabilityRenderer::handleIElectricItem);
-        itemHandlers.put(ICustomDamageItem.class, DurabilityRenderer::handleICustomDamageItem);
+        itemHandlers.put(ItemArmorFluidTank.class, DurabilityRenderer::handleItemArmorFluidTank);
         itemHandlers.put(IEnergyContainerItem.class, DurabilityRenderer::handleEnergyContainer);
+        itemHandlers.put(ICustomDamageItem.class, DurabilityRenderer::handleICustomDamageItem);
         itemHandlers.put(ItemBrewBase.class, DurabilityRenderer::handleBotaniaBrew);
         itemHandlers.put(Item.class, DurabilityRenderer::handleDefault);
     }
@@ -230,7 +230,7 @@ public class DurabilityRenderer {
         List<ItemStackOverlay> overlays = new ArrayList<>();
 
         ItemStackOverlay chargeOverlay = new ItemStackOverlay.ChargeOverlay();
-        double charge = ((double) ElectricItem.manager.getCharge(stack) / bei.getMaxCharge(stack)) * 100;
+        double charge = (ElectricItem.manager.getCharge(stack) / bei.getMaxCharge(stack)) * 100;
         if (Double.isNaN(charge)) return null;
         chargeOverlay.isFull = charge == 100.0;
         chargeOverlay.value = nf.format(charge) + "%";
@@ -247,7 +247,7 @@ public class DurabilityRenderer {
         List<ItemStackOverlay> overlays = new ArrayList<>();
 
         ItemStackOverlay overlay = new ItemStackOverlay.DurabilityOverlay();
-        double charge = ((double) bei.getCharge(stack) / bei.getMaxCharge(stack));
+        double charge = (bei.getCharge(stack) / bei.getMaxCharge(stack));
         if (Double.isNaN(charge)) return null;
         overlay.color = getRGBDurabilityForDisplay(charge);
         charge *= 100;
@@ -301,8 +301,7 @@ public class DurabilityRenderer {
             overlays.addAll(defaultOverlays);
         }
 
-        if (!DuraDisplayConfig.ChargeConfig.Enabled || !(stack.hasTagCompound() && stack.getTagCompound()
-            .hasKey("Energy"))) return overlays;
+        if (!DuraDisplayConfig.ChargeConfig.Enabled) return overlays;
         IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
         assert eci != null;
 
