@@ -1,6 +1,7 @@
 package com.caedis.duradisplay.config;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import com.caedis.duradisplay.overlay.OverlayDurabilityLike;
 import com.caedis.duradisplay.utils.ColorType;
@@ -20,12 +21,13 @@ public abstract class ConfigDurabilityLike extends Config {
     public double[] colorThreshold;
     public int[] threeColors;
     public boolean smoothBar;
-    public int barLocation;
+    public int barOffset;
+    public boolean showBackground;
 
     protected ConfigDurabilityLike(boolean enabled, OverlayDurabilityLike.Style style,
         DurabilityFormatter.Format textFormat, int numPadPosition, boolean showWhenFull, boolean showWhenEmpty,
-        int color, ColorType colorType, double[] colorThreshold, int[] threeColors, boolean smoothBar,
-        int barLocation) {
+        int color, ColorType colorType, double[] colorThreshold, int[] threeColors, boolean smoothBar, int barOffset,
+        boolean showBackground) {
         this.enabled = enabled;
         this.style = style;
         this.textFormat = textFormat;
@@ -37,7 +39,8 @@ public abstract class ConfigDurabilityLike extends Config {
         this.colorThreshold = colorThreshold;
         this.threeColors = threeColors;
         this.smoothBar = smoothBar;
-        this.barLocation = barLocation;
+        this.barOffset = barOffset;
+        this.showBackground = showBackground;
     }
 
     @Override
@@ -46,17 +49,18 @@ public abstract class ConfigDurabilityLike extends Config {
         enabled = config.getBoolean("Enable", category(), enabled, String.format("Enable %s module", category()));
 
         style = ConfigLoad
-            .loadEnum(category(), "Style", style, "Style of the Overlay, can be NumPad, Bar, or VerticalBar");
+            .loadEnum(category(), "Style", style, "Style of the Overlay, can be Text, Bar, or VerticalBar");
 
         numPadPosition = config.getInt(
-            "NumPadPosition",
-            category() + ".NumPad",
+            "Position",
+            category() + ".StyleConfig.Text",
             numPadPosition,
             1,
             9,
             String.format("Location in item where the %s percentage will be (numpad style)", category()));
 
-        textFormat = ConfigLoad.loadEnum(category() + ".NumPad", "TextFormat", textFormat, "Format of the text");
+        textFormat = ConfigLoad
+            .loadEnum(category() + ".StyleConfig.Text", "TextFormat", textFormat, "Format of the text");
 
         showWhenFull = config.getBoolean(
             "ShowWhenFull",
@@ -92,30 +96,39 @@ public abstract class ConfigDurabilityLike extends Config {
             .sorted()
             .toArray();
 
-        color = config.getInt(
+        Pattern hexPattern = Pattern.compile("^(?:[0-9a-fA-F]{3}){1,2}$");
+
+        String colorCheck = config.getString(
             "Color",
             category() + ".Color",
-            color,
-            Integer.MIN_VALUE,
-            Integer.MAX_VALUE,
-            "Color of the Overlay");
+            Integer.toHexString(color),
+            "Color of the Overlay (hex code, no prefix)",
+            hexPattern);
+        color = Integer.parseInt(colorCheck.replace("#", ""), 16);
 
-        threeColors = config
-            .get(
-                category() + ".Color",
-                "ThreeColors",
-                threeColors,
-                "Colors used in Threshold/Smooth color mode",
-                Integer.MIN_VALUE,
-                Integer.MAX_VALUE,
-                true,
-                3)
-            .getIntList();
+        String[] threeColorsCheck = config.get(
+            category() + ".Color",
+            "ThreeColors",
+            Arrays.stream(threeColors)
+                .mapToObj(Integer::toHexString)
+                .toArray(String[]::new),
+            "Colors used in Threshold/Smooth color mode (hex code, no prefix)",
+            true,
+            3,
+            hexPattern)
+            .getStringList();
+        threeColors = Arrays.stream(threeColorsCheck)
+            .mapToInt(s -> Integer.parseInt(s.replace("#", ""), 16))
+            .toArray();
 
-        smoothBar = config.getBoolean("SmoothBar", category() + ".BarStyle", smoothBar, "Smooth the bar length");
+        smoothBar = config
+            .getBoolean("SmoothBar", category() + ".StyleConfig.Bars", smoothBar, "Smooth the bar length");
 
-        barLocation = config
-            .getInt("BarLocation", category() + ".BarStyle", barLocation, 0, 9, "Raise the bar location in screen by");
+        barOffset = config
+            .getInt("BarOffset", category() + ".StyleConfig.Bars", barOffset, 0, 16, "Offset the bar by this amount");
+
+        showBackground = config
+            .getBoolean("ShowBackground", category() + ".StyleConfig.Bars", showBackground, "Show bar background");
 
         postLoadConfig();
     }

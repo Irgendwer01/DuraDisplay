@@ -8,7 +8,7 @@ public class DurabilityFormatter {
 
     public enum Format {
         percent,
-        remain,
+        remaining,
         used,
         max,
         fraction,
@@ -21,7 +21,7 @@ public class DurabilityFormatter {
             case percent -> {
                 return Double.isNaN(percent) ? null : String.format("%.0f%%", percent);
             }
-            case remain -> {
+            case remaining -> {
                 return shortenNumber(current);
             }
             case used -> {

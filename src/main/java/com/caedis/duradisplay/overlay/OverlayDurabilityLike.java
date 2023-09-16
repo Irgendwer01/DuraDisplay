@@ -13,15 +13,16 @@ import org.jetbrains.annotations.Nullable;
 import com.caedis.duradisplay.DuraDisplay;
 import com.caedis.duradisplay.config.ConfigDurabilityLike;
 import com.caedis.duradisplay.render.BarRenderer;
-import com.caedis.duradisplay.render.NumPadRenderer;
 import com.caedis.duradisplay.render.OverlayRenderer;
+import com.caedis.duradisplay.render.TextRenderer;
+import com.caedis.duradisplay.render.VerticalBarRenderer;
 import com.caedis.duradisplay.utils.DurabilityFormatter;
 import com.caedis.duradisplay.utils.DurabilityLikeInfo;
 
 public abstract class OverlayDurabilityLike extends Overlay<ConfigDurabilityLike> {
 
     public enum Style {
-        NumPad,
+        Text,
         Bar,
         VerticalBar
     }
@@ -77,8 +78,21 @@ public abstract class OverlayDurabilityLike extends Overlay<ConfigDurabilityLike
         if (!config().showWhenEmpty && info.isEmpty()) return null;
         if (!config().showWhenFull && info.isFull()) return null;
         if (Objects.requireNonNull(config().style) == Style.Bar) {
-            return new BarRenderer(getColor(info), info.percent(), config().smoothBar, config().barLocation);
+            return new BarRenderer(
+                getColor(info),
+                info.percent(),
+                config().smoothBar,
+                config().barOffset,
+                config().showBackground);
         }
-        return new NumPadRenderer(getValue(info), getColor(info), config().numPadPosition);
+        if (Objects.requireNonNull(config().style) == Style.VerticalBar) {
+            return new VerticalBarRenderer(
+                getColor(info),
+                info.percent(),
+                config().smoothBar,
+                config().barOffset,
+                config().showBackground);
+        }
+        return new TextRenderer(getValue(info), getColor(info), config().numPadPosition);
     }
 }

@@ -21,17 +21,18 @@ public class OverlayCharge extends OverlayDurabilityLike {
         super(
             new ConfigDurabilityLike(
                 true,
-                OverlayDurabilityLike.Style.NumPad,
+                OverlayDurabilityLike.Style.Text,
                 DurabilityFormatter.Format.percent,
                 8,
                 true,
                 true,
-                0xFF55FFFF,
+                0xFF55FF,
                 ColorType.Smooth,
                 new double[] { 30, 70 },
                 new int[] { 0xFFB9AA, 0xBDD6FF, 0x55FFFF },
                 true,
-                2) {
+                2,
+                true) {
 
                 @Override
                 public void postLoadConfig() {

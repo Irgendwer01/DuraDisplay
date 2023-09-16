@@ -26,7 +26,7 @@ public class OverlayDurability extends OverlayDurabilityLike {
         super(
             new ConfigDurabilityLike(
                 true,
-                OverlayDurabilityLike.Style.NumPad,
+                OverlayDurabilityLike.Style.Text,
                 DurabilityFormatter.Format.percent,
                 2,
                 false,
@@ -36,7 +36,8 @@ public class OverlayDurability extends OverlayDurabilityLike {
                 new double[] { 30, 70 },
                 new int[] { 0xFF0000, 0x55FF00, 0x00FF00 },
                 true,
-                0) {
+                0,
+                true) {
 
                 @Override
                 public void postLoadConfig() {

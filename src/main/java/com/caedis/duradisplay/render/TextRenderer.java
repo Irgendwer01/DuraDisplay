@@ -4,7 +4,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 import org.lwjgl.opengl.GL11;
 
-public class NumPadRenderer extends OverlayRenderer {
+public class TextRenderer extends OverlayRenderer {
 
     private final String value;
     private final int color;
@@ -40,7 +40,7 @@ public class NumPadRenderer extends OverlayRenderer {
         }
     }
 
-    public NumPadRenderer(String value, int color, int NumpadPosition) {
+    public TextRenderer(String value, int color, int NumpadPosition) {
         this.value = value;
         this.color = color;
         this.position = NumpadPosition;

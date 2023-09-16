@@ -22,17 +22,18 @@ public class OverlayGadgets extends OverlayDurabilityLike {
         super(
             new ConfigDurabilityLike(
                 true,
-                OverlayDurabilityLike.Style.NumPad,
-                DurabilityFormatter.Format.remain,
+                OverlayDurabilityLike.Style.Text,
+                DurabilityFormatter.Format.remaining,
                 2,
                 true,
                 true,
-                0xFFFFFFFF,
+                0xFFFFFF,
                 ColorType.Single,
                 new double[] { 30, 70 },
-                new int[] { 0xFF0000, 0xFFBDC8, 0xFFFFFFFF },
+                new int[] { 0xFF0000, 0xFFBDC8, 0xFFFFFF },
                 true,
-                2) {
+                2,
+                true) {
 
                 @Override
                 public void postLoadConfig() {
