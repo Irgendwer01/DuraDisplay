@@ -6,7 +6,7 @@
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "minecraft.MixinRenderItem",
-    "minecraft.MixinGuiScreen"
+    "minecraft.MixinGuiScreen",
+    "minecraft.MixinRenderItem"
   ]
 }

@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.caedis.duradisplay.config.DuraDisplayConfig;
+import com.caedis.duradisplay.utils.AppEngItemRenderHook;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -23,6 +24,7 @@ public class DuraDisplay {
 
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
 
+    @SuppressWarnings("unused")
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         if (FMLCommonHandler.instance()
@@ -33,8 +35,14 @@ public class DuraDisplay {
                 .bus()
                 .register(this);
         }
+        try {
+            AppEngItemRenderHook.init();
+        } catch (NoClassDefFoundError e) {
+            DuraDisplay.LOG.info("AE2 not found, skipping AppEngItemRenderHook");
+        }
     }
 
+    @SuppressWarnings("unused")
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.modID.equals(Tags.MODID)) {
