@@ -8,7 +8,7 @@
 		"mcversion": "${minecraftVersion}",
 		"url": "https://github.com/Caedis/DuraDisplay",
 		"updateUrl": "",
-		"authorList": ["Caedis"],
+		"authorList": ["Caedis", "ghostflyby"],
 		"credits": "",
 		"logoFile": "",
 		"screenshots": [],
