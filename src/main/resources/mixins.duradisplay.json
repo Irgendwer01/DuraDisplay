@@ -7,6 +7,8 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "minecraft.MixinGuiScreen",
-    "minecraft.MixinRenderItem"
-  ]
+    "minecraft.MixinRenderItem",
+    "minecraft.MixinGuiContainerCreative"
+  ],
+  "mixins": []
 }
