@@ -1,6 +1,6 @@
 package com.caedis.duradisplay.utils;
 
-import java.awt.*;
+import java.awt.Color;
 
 import com.caedis.duradisplay.config.ConfigDurabilityLike;
 

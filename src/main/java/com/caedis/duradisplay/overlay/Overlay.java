@@ -14,7 +14,7 @@ import com.caedis.duradisplay.render.OverlayRenderer;
  * <p/>
  * By extending this, non-abstract classes will be automatically registered as an Overlay
  * with config automatically loaded at launch and registered in the GUI
- * 
+ *
  * @param <C> Config type extending {@link Config}
  */
 @com.caedis.duradisplay.annotation.Overlay
