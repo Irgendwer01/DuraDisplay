@@ -12,13 +12,11 @@ import com.caedis.duradisplay.render.DurabilityRenderer;
 @Mixin(value = GuiContainerCreative.class)
 public class MixinGuiContainerCreative {
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "drawGuiContainerBackgroundLayer(FII)V", at = @At("HEAD"))
     private void drawBackgroundLayerStart(CallbackInfo cbi) {
         DurabilityRenderer.Execute = false;
     }
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "drawGuiContainerBackgroundLayer(FII)V", at = @At("RETURN"))
     private void drawBackgroundLayerEnd(CallbackInfo cbi) {
         DurabilityRenderer.Execute = true;
