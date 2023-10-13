@@ -16,7 +16,6 @@ import com.caedis.duradisplay.render.DurabilityRenderer;
 @Mixin(value = RenderItem.class)
 public abstract class MixinRenderItem {
 
-    @SuppressWarnings({ "UnresolvedMixinReference", "mapping" })
     @Redirect(
         method = "renderItemOverlayIntoGUI(Lnet/minecraft/client/gui/FontRenderer;Lnet/minecraft/client/renderer/texture/TextureManager;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
         at = @At(

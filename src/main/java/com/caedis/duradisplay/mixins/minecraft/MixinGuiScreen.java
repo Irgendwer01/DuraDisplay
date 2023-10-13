@@ -12,13 +12,11 @@ import com.caedis.duradisplay.render.DurabilityRenderer;
 @Mixin(value = GuiScreen.class)
 public class MixinGuiScreen {
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "drawScreen(IIF)V", at = @At("HEAD"))
     private void drawScreenStart(CallbackInfo cbi) {
         DurabilityRenderer.Execute = false;
     }
 
-    @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "drawScreen(IIF)V", at = @At("RETURN"))
     private void drawScreenEnd(CallbackInfo cbi) {
         DurabilityRenderer.Execute = true;
