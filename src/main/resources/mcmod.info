@@ -1,21 +1,12 @@
-{
-	"modListVersion": 2,
-	"modList": [{
-		"modid": "${modId}",
-		"name": "${modName}",
-		"description": "Show numerical durability values on items",
-		"version": "${modVersion}",
-		"mcversion": "${minecraftVersion}",
-		"url": "https://github.com/Caedis/DuraDisplay",
-		"updateUrl": "",
-		"authorList": ["Caedis", "ghostflyby"],
-		"credits": "",
-		"logoFile": "",
-		"screenshots": [],
-		"parent": "",
-		"requiredMods": [],
-		"dependencies": ["Gregtech", "EnderIO"],
-		"dependants": [],
-		"useDependencyInformation": true
-	}]
-}
+[{
+  "modid": "${modid}",
+  "name": "${modname}",
+  "description": "Show numerical durability values on items",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "",
+  "url": "github.com/irgendwer01/DuraDisplay",
+  "authorList": ["Caedis", "ghostflyby", "Irgendwer01"],
+  "credits": "Caedis for making DuraDisplay",
+  "dependencies": []
+}]

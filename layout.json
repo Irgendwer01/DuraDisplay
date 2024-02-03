@@ -1,0 +1,16 @@
+{
+  "ideaDirPath": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea",
+  "modulesMap": {
+    "DuraDisplay": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.iml",
+    ":processor": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/processor/DuraDisplay.processor.iml",
+    "DuraDisplay:api": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.api.iml",
+    "DuraDisplay:ideVirtualMain": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.ideVirtualMain.iml",
+    "DuraDisplay:injectedTags": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.injectedTags.iml",
+    "DuraDisplay:main": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.main.iml",
+    "DuraDisplay:mcLauncher": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.mcLauncher.iml",
+    "DuraDisplay:patchedMc": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.patchedMc.iml",
+    "DuraDisplay:test": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/DuraDisplay.test.iml",
+    ":processor:main": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/processor/DuraDisplay.processor.main.iml",
+    ":processor:test": "/home/irgendwer/Dokumente/GitHub/DuraDisplay/.idea/modules/processor/DuraDisplay.processor.test.iml"
+  }
+}

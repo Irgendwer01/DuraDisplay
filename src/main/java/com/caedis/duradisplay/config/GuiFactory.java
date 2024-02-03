@@ -5,7 +5,7 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-import cpw.mods.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.client.IModGuiFactory;
 
 @SuppressWarnings("unused")
 public class GuiFactory implements IModGuiFactory {
@@ -14,17 +14,17 @@ public class GuiFactory implements IModGuiFactory {
     public void initialize(Minecraft minecraftInstance) {}
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass() {
-        return GuiConfigDuraDisplay.class;
+    public boolean hasConfigGui() {
+        return true;
     }
 
     @Override
-    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-        return null;
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new GuiConfigDuraDisplay(parentScreen);
     }
 
     @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
+    public Set<IModGuiFactory.RuntimeOptionCategoryElement> runtimeGuiCategories() {
         return null;
     }
 }

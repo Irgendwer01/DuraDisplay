@@ -2,6 +2,7 @@ package com.caedis.duradisplay.render;
 
 import net.minecraft.client.gui.FontRenderer;
 
+import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 public class TextRenderer extends OverlayRenderer {
@@ -50,9 +51,9 @@ public class TextRenderer extends OverlayRenderer {
     public void Render(FontRenderer fontRenderer, int xPosition, int yPosition) {
         GL11.glPushMatrix();
         GL11.glScalef(0.5F, 0.5F, 0.5F);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableBlend();
         GL11.glTranslatef(0, 0, 50);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         int stringWidth = fontRenderer.getStringWidth(value);
@@ -65,9 +66,9 @@ public class TextRenderer extends OverlayRenderer {
         fontRenderer.drawString(value, x, y - 1, 0);
 
         fontRenderer.drawString(value, x, y, color);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        GlStateManager.enableBlend();
         GL11.glScalef(2.0F, 2.0F, 2.0F);
         GL11.glPopMatrix();
     }

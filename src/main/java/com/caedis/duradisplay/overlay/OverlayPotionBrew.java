@@ -8,8 +8,8 @@ import com.caedis.duradisplay.config.ConfigDurabilityLike;
 import com.caedis.duradisplay.utils.ColorType;
 import com.caedis.duradisplay.utils.DurabilityFormatter;
 import com.caedis.duradisplay.utils.DurabilityLikeInfo;
-
 import vazkii.botania.common.item.brew.ItemBrewBase;
+
 
 // Overlay for brew and potions
 // currently Botania brew and Blood Magic AlchemyFlask
@@ -48,7 +48,8 @@ public class OverlayPotionBrew extends OverlayDurabilityLike {
                 }
             });
         addHandler("vazkii.botania.common.item.brew.ItemBrewBase", OverlayPotionBrew::handleBotaniaBrew);
-        addHandler("WayofTime.alchemicalWizardry.common.items.potion.AlchemyFlask", OverlayDurability::handleDefault);
+        addHandler("WayofTime.bloodmagic.item.ItemPotionFlask", OverlayDurability::handleDefault);
+
 
     }
 
@@ -58,12 +59,13 @@ public class OverlayPotionBrew extends OverlayDurabilityLike {
         return config;
     }
 
+
     public static DurabilityLikeInfo handleBotaniaBrew(@NotNull ItemStack stack) {
         ItemBrewBase brew = ((ItemBrewBase) stack.getItem());
         assert brew != null;
 
         double current = brew.getSwigsLeft(stack);
-        double max = brew.getMaxDamage();
+        double max = brew.getMaxDamage(stack);
         return new DurabilityLikeInfo(current, max);
     }
 }

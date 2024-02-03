@@ -1,26 +1,27 @@
 package com.caedis.duradisplay;
 
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.caedis.duradisplay.config.DuraDisplayConfig;
-import com.caedis.duradisplay.utils.AppEngItemRenderHook;
+import zone.rong.mixinbooter.ILateMixinLoader;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.Collections;
+import java.util.List;
 
 @Mod(
     modid = Tags.MODID,
     version = Tags.VERSION,
     name = Tags.MODNAME,
-    acceptedMinecraftVersions = "[1.7.10]",
+    acceptedMinecraftVersions = "[1.12.2]",
     guiFactory = "com.caedis.duradisplay.config.GuiFactory",
-    acceptableRemoteVersions = "*",
-    dependencies = "after:gregtech@[5.09.43.63,);" + " after:EnderIO@[2.4.18,);")
-public class DuraDisplay {
+    acceptableRemoteVersions = "*")
+public class DuraDisplay implements ILateMixinLoader {
 
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
 
@@ -35,20 +36,27 @@ public class DuraDisplay {
                 .bus()
                 .register(this);
         }
+        /*
         try {
             AppEngItemRenderHook.init();
         } catch (NoClassDefFoundError e) {
             DuraDisplay.LOG.info("AE2 not found, skipping AppEngItemRenderHook");
         }
+
+         */
     }
 
     @SuppressWarnings("unused")
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.modID.equals(Tags.MODID)) {
+        if (event.getModID().equals(Tags.MODID)) {
             DuraDisplayConfig.config.save();
             DuraDisplayConfig.reloadConfigObject();
         }
     }
 
+    @Override
+    public List<String> getMixinConfigs() {
+        return Collections.singletonList("mixins.duradisplay-late.json");
+    }
 }

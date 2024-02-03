@@ -1,22 +1,25 @@
 package com.caedis.duradisplay.overlay;
 
+import gregtech.api.capability.GregtechCapabilities;
 import net.minecraft.item.ItemStack;
 
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 
 import com.caedis.duradisplay.config.ConfigDurabilityLike;
-import com.caedis.duradisplay.config.DuraDisplayConfig;
 import com.caedis.duradisplay.utils.ColorType;
 import com.caedis.duradisplay.utils.DurabilityFormatter;
 import com.caedis.duradisplay.utils.DurabilityLikeInfo;
-import com.caedis.duradisplay.utils.ModSelfDrawnBar;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 
-import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 
 public class OverlayCharge extends OverlayDurabilityLike {
 
+    public static boolean enabled;
     public OverlayCharge() {
         super(
             new ConfigDurabilityLike(
@@ -36,22 +39,22 @@ public class OverlayCharge extends OverlayDurabilityLike {
 
                 @Override
                 public void postLoadConfig() {
-                    if (enabled && DuraDisplayConfig.Enable) ModSelfDrawnBar.changeChargebar(false);
-                    else ModSelfDrawnBar.restoreChargebar();
+                    OverlayCharge.enabled = enabled;
                     configCategory.setComment("""
                         Charge is the module that shows charge(Electricity/Power) of items
                         GT EU, IC2 EU, RF included
                                                                     """);
                 }
-
                 @Override
                 public @NotNull String category() {
                     return "charge";
                 }
             });
         addHandler("ic2.api.item.IElectricItem", OverlayCharge::handleIElectricItem);
-        addHandler("tconstruct.library.tools.ToolCore", OverlayCharge::handleToolCore);
-        addHandler("cofh.api.energy.IEnergyContainerItem", OverlayCharge::handleEnergyContainer);
+        addHandler("gregtech.api.items.toolitem.IGTTool", OverlayCharge::handleIElectricItemGT);
+        addHandler("gregtech.api.items.armor.IArmorItem", OverlayCharge::handleIElectricItemGT);
+        addHandler("appeng.api.implementations.items.IAEItemPowerStorage", OverlayCharge::handleIAEItemPowerStorage);
+        addHandler("net.minecraft.item.Item", OverlayCharge::handleEnergyStorage);
     }
 
     @Override
@@ -67,18 +70,24 @@ public class OverlayCharge extends OverlayDurabilityLike {
         return new DurabilityLikeInfo(ElectricItem.manager.getCharge(stack), bei.getMaxCharge(stack));
     }
 
-    public static DurabilityLikeInfo handleEnergyContainer(@NotNull ItemStack stack) {
+    public static DurabilityLikeInfo handleEnergyStorage(@NotNull ItemStack stack) {
+        IEnergyStorage eci = stack.getCapability(CapabilityEnergy.ENERGY, null);
 
-        IEnergyContainerItem eci = ((IEnergyContainerItem) stack.getItem());
-        assert eci != null;
-
-        return new DurabilityLikeInfo(eci.getEnergyStored(stack), eci.getMaxEnergyStored(stack));
+        if (eci != null) return new DurabilityLikeInfo(eci.getEnergyStored(), eci.getMaxEnergyStored());
+        return null;
     }
 
-    public static DurabilityLikeInfo handleToolCore(@NotNull ItemStack stack) {
+    public static DurabilityLikeInfo handleIElectricItemGT(@NotNull ItemStack stack) {
+        gregtech.api.capability.IElectricItem electricItem = stack.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+        if (electricItem != null) {
+            return new DurabilityLikeInfo(electricItem.getCharge(), electricItem.getMaxCharge());
+        }
+        return null;
+    }
 
-        if (!stack.hasTagCompound() || !stack.getTagCompound()
-            .hasKey("Energy")) return null;
-        return handleEnergyContainer(stack);
+    public static DurabilityLikeInfo handleIAEItemPowerStorage(@NotNull ItemStack stack) {
+        IAEItemPowerStorage tool = ((IAEItemPowerStorage) stack.getItem());
+        assert tool != null;
+        return new DurabilityLikeInfo(tool.getAECurrentPower(stack), tool.getAEMaxPower(stack));
     }
 }

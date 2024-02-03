@@ -49,12 +49,12 @@ public class OverlayGadgets extends OverlayDurabilityLike {
                     return "gadgets";
                 }
             });
-        addHandler("gregtech.api.items.GT_MetaBase_Item", OverlayGadgets::handleGregtech);
-        addHandler("buildcraft.core.ItemPaintbrush", OverlayGadgets::handleBCBrush);
-        addHandler("tmechworks.items.SpoolOfWire", OverlayGadgets::handleMechworks);
+        addHandler("gregtech.api.items.metaitem.MetaItem", OverlayGadgets::handleGregtech);
+        addHandler("buildcraft.core.item.ItemPaintbrush_BC8", OverlayGadgets::handleBCPaintBrush);
         addHandler("ic2.core.item.tool.ItemToolPainter", OverlayDurability::handleDefault);
-        addHandler("WayofTime.alchemicalWizardry.common.items.ScribeTool", OverlayDurability::handleDefault);
-        addHandler("thaumcraft.api.IScribeTools", OverlayDurability::handleDefault);
+        addHandler("WayofTime.bloodmagic.item.ItemInscriptionTool", OverlayGadgets::handleBMInscriptionTools);
+        addHandler("thaumcraft.common.items.tools.ItemScribingTools", OverlayDurability::handleDefault);
+        addHandler("vazkii.botania.common.item.interaction.thaumcraft.ItemManaInkwell", OverlayDurability::handleDefault);
         addHandler("net.minecraft.item.Item", OverlayGadgets::handleByAllowList);
     }
 
@@ -76,29 +76,29 @@ public class OverlayGadgets extends OverlayDurabilityLike {
         return config;
     }
 
-    private static DurabilityLikeInfo handleMechworks(@NotNull ItemStack stack) {
-        Item item = stack.getItem();
-        assert item != null;
-
-        double max = item.getMaxDamage();
-        double current = max - item.getDamage(stack);
-        return new DurabilityLikeInfo(current, max);
+    @Nullable
+    public static DurabilityLikeInfo handleBMInscriptionTools(@NotNull ItemStack stack) {
+        int max = 10;
+        int current = 0;
+        if (stack.hasTagCompound()) {
+            current = stack.getTagCompound().getInteger("uses");
+            return new DurabilityLikeInfo(current, max);
+        }
+        return null;
     }
 
-    @Nullable
-    public static DurabilityLikeInfo handleBCBrush(@NotNull ItemStack stack) {
-        Item item = stack.getItem();
-        assert item != null;
-
-        if (!stack.hasTagCompound()) return null;
-        double max = item.getMaxDamage() + 1;
-        double current = max - item.getDamage(stack);
+    public static DurabilityLikeInfo handleBCPaintBrush(@NotNull ItemStack stack) {
+        int max = 64;
+        int current = max;
+        if (stack.hasTagCompound()) {
+            current = max - stack.getTagCompound().getInteger("damage");
+        }
         return new DurabilityLikeInfo(current, max);
     }
 
     @Nullable
     public static DurabilityLikeInfo handleByAllowList(@NotNull ItemStack stack) {
-        if (!AllowListUnLocalized.contains(stack.getUnlocalizedName())) return null;
+        if (!AllowListUnLocalized.contains(stack.getTranslationKey())) return null;
         Item item = stack.getItem();
         assert item != null;
 
@@ -111,47 +111,54 @@ public class OverlayGadgets extends OverlayDurabilityLike {
 
     @Nullable
     public static DurabilityLikeInfo handleGregtech(@NotNull ItemStack stack) {
-        long max;
+        long max = 0;
         long current = 0;
-        if (stack.stackSize != 1) return null;
-        var damage = stack.getItemDamage();
-        switch (damage) {
-            case 32472 -> max = 16;
-            case 32473 -> {
-                max = 16;
-                current = max;
-            }
-            case 32474, 32475 -> max = 100;
-            case 32476 -> {
-                max = 100;
-                current = max;
-            }
-            case 32477, 32478 -> max = 1000;
-            case 32479 -> {
-                max = 1000;
-                current = max;
-            }
-            case 32430, 32431, 32432, 32433, 32434, 32435, 32436, 32437, 32438, 32439, 32440, 32441, 32442, 32443, 32444, 32445, 32446, 32447, 32448, 32449, 32450, 32451, 32452, 32453, 32454, 32455, 32456, 32457, 32458, 32459, 32460 -> {
-                max = 512;
-                if (damage % 2 == 0) {
-                    current = max;
+
+        var tag = stack.getTagCompound();
+
+        switch (stack.getItemDamage()) {
+            case 91: {
+                if (tag != null) {
+                    max = 100;
+                    current = tag.getCompoundTag("Fluid").getInteger("Amount");
+                    return new DurabilityLikeInfo(current, max);
                 }
             }
-            default -> {
-                return null;
+            case 92: {
+                if (tag != null) {
+                    max = 1000;
+                    current = tag.getCompoundTag("Fluid").getInteger("Amount");
+                    return new DurabilityLikeInfo(current, max);
+                }
             }
-        }
+            case 90: {
+                if (tag != null) {
+                    max = 16;
+                    current = tag.getInteger("usesLeft");
+                    return new DurabilityLikeInfo(current, max);
+                }
+            }
+            case 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77: {
+                max = 512;
 
-        if (stack.hasTagCompound()) {
-            var tag = stack.getTagCompound();
-            if (tag.hasKey("GT.RemainingPaint")) {
-                current = tag.getLong("GT.RemainingPaint");
+                if (tag != null) {
+                    current = tag.getInteger("GT.UsesLeft");
+                } else {
+                    current = max;
+                }
+                return new DurabilityLikeInfo(current, max);
             }
-            if (tag.hasKey("GT.LighterFuel")) {
-                current = tag.getLong("GT.LighterFuel");
+            case 60: {
+                max = 1024;
 
+                if (tag != null) {
+                    current = tag.getInteger("GT.UsesLeft");
+                } else {
+                    current = max;
+                }
+                return new DurabilityLikeInfo(current, max);
             }
+            default: return null;
         }
-        return new DurabilityLikeInfo(current, max);
     }
 }

@@ -1,8 +1,10 @@
 package com.caedis.duradisplay.render;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.opengl.GL11;
 
 public class VerticalBarRenderer extends OverlayRenderer {
@@ -22,7 +24,7 @@ public class VerticalBarRenderer extends OverlayRenderer {
         this.showBackground = showBackground;
     }
 
-    private static final Tessellator tessellator = Tessellator.instance;
+    private static final Tessellator tessellator = Tessellator.getInstance();
 
     @Override
     public void Render(FontRenderer fontRenderer, int xPosition, int yPosition) {
@@ -31,11 +33,11 @@ public class VerticalBarRenderer extends OverlayRenderer {
         else height = Math.round(durabilityPercent * 13.0);
         final int k = (int) Math.round(durabilityPercent * 255.0);
 
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
+        GlStateManager.disableBlend();
 
         final int i1 = (255 - k) / 4 << 16 | 0x3F00;
 
@@ -45,22 +47,22 @@ public class VerticalBarRenderer extends OverlayRenderer {
         }
         renderQuad(xPosition + offset, yPosition + 2, 1, height, color);
 
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
 
     }
 
     private static void renderQuad(final double xPosition, final double yPosition, final double width,
         final double height, final int color) {
-        tessellator.startDrawingQuads();
-        tessellator.setColorOpaque_I(color);
-        tessellator.addVertex(xPosition, yPosition + 13 - height, 0.0D);
-        tessellator.addVertex(xPosition, yPosition + 13, 0.0D);
-        tessellator.addVertex(xPosition + width, yPosition + 13, 0.0D);
-        tessellator.addVertex(xPosition + width, yPosition + 13 - height, 0.0D);
+        int red = color >> 16 & 255, green = color >> 8 & 255, blue = color & 255;
+        tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
+        tessellator.getBuffer().pos(xPosition, yPosition, 0.0D).color(red, green, blue, 255).endVertex();
+        tessellator.getBuffer().pos(xPosition, yPosition + height, 0.0D).color(red, green, blue, 255).endVertex();
+        tessellator.getBuffer().pos(xPosition + width, yPosition + height, 0.0D).color(red, green, blue, 255).endVertex();
+        tessellator.getBuffer().pos(xPosition + width, yPosition, 0.0D).color(red, green, blue, 255).endVertex();
         tessellator.draw();
     }
 }

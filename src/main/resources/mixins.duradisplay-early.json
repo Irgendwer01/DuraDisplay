@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.caedis.duradisplay.mixins",
+  "refmap": "mixins.duradisplay.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "minecraft.MixinGuiContainerCreative",
+    "minecraft.MixinGuiScreen",
+    "minecraft.MixinRenderItem",
+    "gregtech.ToolChargeBarRendererMixin"
+  ],
+  "mixins": []
+}

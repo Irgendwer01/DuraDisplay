@@ -19,7 +19,7 @@ public class DurabilityFormatter {
         double percent = current / max * 100;
         switch (format) {
             case percent -> {
-                return Double.isNaN(percent) ? null : String.format("%.0f%%", percent);
+                return (Double.isNaN(percent) || Double.isInfinite(percent)) ? null : String.format("%.0f%%", percent);
             }
             case remaining -> {
                 return shortenNumber(current);
@@ -31,7 +31,7 @@ public class DurabilityFormatter {
                 return shortenNumber(max);
             }
             case fraction -> {
-                return Double.isNaN(percent) ? null : String.format("%.0f/%.0f", current, max);
+                return (Double.isNaN(percent) || Double.isInfinite(percent)) ? null : String.format("%.0f/%.0f", current, max);
             }
         }
         return null;

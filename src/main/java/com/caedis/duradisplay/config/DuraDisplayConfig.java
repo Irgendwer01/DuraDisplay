@@ -7,7 +7,6 @@ import net.minecraftforge.common.config.Configuration;
 
 import com.caedis.duradisplay.DuraDisplay;
 import com.caedis.duradisplay.overlay.OverlayInfo;
-import com.caedis.duradisplay.utils.ModSelfDrawnBar;
 
 public class DuraDisplayConfig {
 
@@ -41,11 +40,6 @@ public class DuraDisplayConfig {
     public static void reloadConfigObject() {
 
         Enable = config.getBoolean("Enable", Configuration.CATEGORY_GENERAL, Enable, "Enable/disable the entire mod");
-        if (Enable) {
-            ModSelfDrawnBar.change(false);
-        } else {
-            ModSelfDrawnBar.restore();
-        }
 
         for (var c : OverlayInfo.getConfigs()) {
             if (c != null) c.loadConfig();

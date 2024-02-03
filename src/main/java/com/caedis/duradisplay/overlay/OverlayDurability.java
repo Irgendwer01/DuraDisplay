@@ -1,5 +1,7 @@
 package com.caedis.duradisplay.overlay;
 
+import gregtech.api.items.metaitem.MetaItem;
+import gregtech.common.ConfigHolder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,9 +13,8 @@ import com.caedis.duradisplay.config.DuraDisplayConfig;
 import com.caedis.duradisplay.utils.ColorType;
 import com.caedis.duradisplay.utils.DurabilityFormatter;
 import com.caedis.duradisplay.utils.DurabilityLikeInfo;
-import com.caedis.duradisplay.utils.ModSelfDrawnBar;
 
-import gregtech.api.items.GT_RadioactiveCell_Item;
+
 import ic2.api.item.ICustomDamageItem;
 import ic2.core.item.armor.ItemArmorFluidTank;
 
@@ -38,11 +39,9 @@ public class OverlayDurability extends OverlayDurabilityLike {
 
                 @Override
                 public void postLoadConfig() {
-                    if (enabled && DuraDisplayConfig.Enable) ModSelfDrawnBar.changeDurabilitybar(false);
-                    else ModSelfDrawnBar.restoreDurabilitybar();
                     configCategory.setComment("""
                         Durability is the default module that shows durability of items
-                                                                        """);
+                                                                     """);
                 }
 
                 @Override
@@ -50,20 +49,18 @@ public class OverlayDurability extends OverlayDurabilityLike {
                     return "durability";
                 }
             });
-        addHandler("gregtech.api.items.GT_MetaBase_Item", OverlayDurability::handleGregTech);
-        addHandler("gregtech.api.items.GT_RadioactiveCell_Item", OverlayDurability::handleGregTechRadioactiveCell);
-        addHandler("tconstruct.library.weaponry.AmmoItem", i -> null);
+        addHandler("gregtech.api.items.toolitem.IGTTool", OverlayDurability::handleGregTech);
         addHandler("appeng.items.tools.powered.powersink.AEBasePoweredItem", i -> null);
         addHandler("ic2.api.item.IElectricItem", i -> null);
-        addHandler("tconstruct.library.tools.ToolCore", OverlayDurability::handleToolCore);
         addHandler("ic2.core.item.armor.ItemArmorFluidTank", OverlayDurability::handleItemArmorFluidTank);
         addHandler("ic2.api.item.ICustomDamageItem", OverlayDurability::handleICustomDamageItem);
         addHandler("vazkii.botania.common.item.brew.ItemBrewBase", i -> null);
-        addHandler("WayofTime.alchemicalWizardry.common.items.potion.AlchemyFlask", i -> null);
-        addHandler("WayofTime.alchemicalWizardry.common.items.ScribeTool", i -> null);
+        addHandler("vazkii.botania.common.item.interaction.thaumcraft.ItemManaInkwell", i -> null);
+        addHandler("WayofTime.bloodmagic.item.ItemPotionFlask", i -> null);
+        addHandler("WayofTime.bloodmagic.item.ItemInscriptionTool", i -> null);
         addHandler("buildcraft.core.ItemPaintbrush", i -> null);
         addHandler("ic2.core.item.tool.ItemToolPainter", i -> null);
-        addHandler("thaumcraft.api.IScribeTools", i -> null);
+        addHandler("thaumcraft.common.items.tools.ItemScribingTools", i -> null);
         addHandler("net.minecraft.item.Item", OverlayDurability::handleDefault);
     }
 
@@ -79,7 +76,7 @@ public class OverlayDurability extends OverlayDurabilityLike {
         if (!item.isDamageable()) return null;
 
         // handled by OverlayGadgets
-        if (OverlayGadgets.AllowListUnLocalized.contains(stack.getUnlocalizedName())) return null;
+        if (OverlayGadgets.AllowListUnLocalized.contains(stack.getTranslationKey())) return null;
 
         double max = item.getMaxDamage(stack);
         double current = max - item.getDamage(stack);
@@ -90,51 +87,21 @@ public class OverlayDurability extends OverlayDurabilityLike {
         if (!stack.hasTagCompound()) return null;
         NBTTagCompound nbt = stack.getTagCompound();
 
-        if (!nbt.hasKey("GT.ToolStats")) {
-            return null;
-        } else {
-
-            NBTTagCompound ts = nbt.getCompoundTag("GT.ToolStats");
-            double damage = ts.getLong("Damage");
-            double max = ts.getLong("MaxDamage");
+        if (nbt.hasKey("GT.Tool")) {
+            NBTTagCompound ts = nbt.getCompoundTag("GT.Tool");
+            double damage = ts.getLong("Durability");
+            double max = ts.getLong("MaxDurability");
             double current = max - damage;
             return new DurabilityLikeInfo(current, max);
         }
-
-    }
-
-    public static DurabilityLikeInfo handleToolCore(@NotNull ItemStack stack) {
-        if (!stack.hasTagCompound() || !stack.getTagCompound()
-            .hasKey("InfiTool")) return null;
-        NBTTagCompound tags = stack.getTagCompound()
-            .getCompoundTag("InfiTool");
-
-        if (tags.getInteger("Unbreaking") < 10) {
-            int damage = tags.getInteger("Damage");
-            int max = tags.getInteger("TotalDurability");
-            int current = max - damage;
-            return new DurabilityLikeInfo(current, max);
-        }
-
         return null;
-    }
-
-    public static DurabilityLikeInfo handleGregTechRadioactiveCell(@NotNull ItemStack stack) {
-        GT_RadioactiveCell_Item bei = ((GT_RadioactiveCell_Item) stack.getItem());
-
-        assert bei != null;
-
-        double damage = bei.getDamageOfStack(stack);
-        double max = bei.getMaxDamageEx();
-        double current = max - damage;
-        return new DurabilityLikeInfo(current, max);
     }
 
     public static DurabilityLikeInfo handleItemArmorFluidTank(@NotNull ItemStack stack) {
         ItemArmorFluidTank bei = ((ItemArmorFluidTank) stack.getItem());
         assert bei != null;
 
-        return new DurabilityLikeInfo(bei.getCharge(stack), bei.getCapacity(stack));
+        return new DurabilityLikeInfo(bei.getCharge(stack), bei.getMaxCharge(stack));
     }
 
     public static DurabilityLikeInfo handleICustomDamageItem(@NotNull ItemStack stack) {
