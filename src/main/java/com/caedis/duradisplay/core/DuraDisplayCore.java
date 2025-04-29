@@ -3,6 +3,7 @@ package com.caedis.duradisplay.core;
 import java.util.*;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+
 import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")

@@ -25,7 +25,7 @@ public class DurabilityRenderer {
 
     static {
         Arrays.stream(OverlayInfo.getOverlays())
-            .forEach(DurabilityRenderer::addHandlers);
+                .forEach(DurabilityRenderer::addHandlers);
     }
 
     public static void Render(FontRenderer fontRenderer, ItemStack stack, int xPosition, int yPosition) {
@@ -37,7 +37,5 @@ public class DurabilityRenderer {
                 fOverlay.Render(fontRenderer, xPosition, yPosition);
             }
         }
-
     }
-
 }

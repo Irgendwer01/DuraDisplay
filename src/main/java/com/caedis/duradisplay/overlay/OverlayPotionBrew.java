@@ -8,8 +8,8 @@ import com.caedis.duradisplay.config.ConfigDurabilityLike;
 import com.caedis.duradisplay.utils.ColorType;
 import com.caedis.duradisplay.utils.DurabilityFormatter;
 import com.caedis.duradisplay.utils.DurabilityLikeInfo;
-import vazkii.botania.common.item.brew.ItemBrewBase;
 
+import vazkii.botania.common.item.brew.ItemBrewBase;
 
 // Overlay for brew and potions
 // currently Botania brew and Blood Magic AlchemyFlask
@@ -19,38 +19,36 @@ public class OverlayPotionBrew extends OverlayDurabilityLike {
     @SuppressWarnings("unused")
     public OverlayPotionBrew() {
         super(
-            new ConfigDurabilityLike(
-                true,
-                OverlayDurabilityLike.Style.Text,
-                DurabilityFormatter.Format.remaining,
-                2,
-                true,
-                true,
-                0xFFFFFF,
-                ColorType.Single,
-                new double[] { 30, 70 },
-                new int[] { 0xFF0000, 0xFFBDC8, 0xFFFFFF },
-                true,
-                2,
-                true) {
+                new ConfigDurabilityLike(
+                        true,
+                        OverlayDurabilityLike.Style.Text,
+                        DurabilityFormatter.Format.remaining,
+                        2,
+                        true,
+                        true,
+                        0xFFFFFF,
+                        ColorType.Single,
+                        new double[] { 30, 70 },
+                        new int[] { 0xFF0000, 0xFFBDC8, 0xFFFFFF },
+                        true,
+                        2,
+                        true) {
 
-                @Override
-                public void postLoadConfig() {
-                    configCategory.setComment("""
-                        PotionBrew is the module that shows the remaining swigs of potions and brews
-                        currently Botania brews and Blood Magic AlchemyFlask
-                                                                        """);
-                }
+                    @Override
+                    public void postLoadConfig() {
+                        configCategory.setComment("""
+                                PotionBrew is the module that shows the remaining swigs of potions and brews
+                                currently Botania brews and Blood Magic AlchemyFlask
+                                                                                """);
+                    }
 
-                @Override
-                public @NotNull String category() {
-                    return "potion_brew";
-                }
-            });
+                    @Override
+                    public @NotNull String category() {
+                        return "potion_brew";
+                    }
+                });
         addHandler("vazkii.botania.common.item.brew.ItemBrewBase", OverlayPotionBrew::handleBotaniaBrew);
         addHandler("WayofTime.bloodmagic.item.ItemPotionFlask", OverlayDurability::handleDefault);
-
-
     }
 
     @Override
@@ -58,7 +56,6 @@ public class OverlayPotionBrew extends OverlayDurabilityLike {
     ConfigDurabilityLike config() {
         return config;
     }
-
 
     public static DurabilityLikeInfo handleBotaniaBrew(@NotNull ItemStack stack) {
         ItemBrewBase brew = ((ItemBrewBase) stack.getItem());

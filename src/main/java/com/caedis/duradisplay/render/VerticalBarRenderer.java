@@ -3,9 +3,7 @@ package com.caedis.duradisplay.render;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
 
 public class VerticalBarRenderer extends OverlayRenderer {
 
@@ -16,7 +14,7 @@ public class VerticalBarRenderer extends OverlayRenderer {
     private final boolean showBackground;
 
     public VerticalBarRenderer(int color, double durabilityPercent, boolean smoothBar, int offset,
-        boolean showBackground) {
+                               boolean showBackground) {
         this.color = color;
         this.durabilityPercent = durabilityPercent;
         this.smoothBar = smoothBar;
@@ -52,16 +50,16 @@ public class VerticalBarRenderer extends OverlayRenderer {
         GlStateManager.enableTexture2D();
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
-
     }
 
     private static void renderQuad(final double xPosition, final double yPosition, final double width,
-        final double height, final int color) {
+                                   final double height, final int color) {
         int red = color >> 16 & 255, green = color >> 8 & 255, blue = color & 255;
         tessellator.getBuffer().begin(7, DefaultVertexFormats.POSITION_COLOR);
         tessellator.getBuffer().pos(xPosition, yPosition, 0.0D).color(red, green, blue, 255).endVertex();
         tessellator.getBuffer().pos(xPosition, yPosition + height, 0.0D).color(red, green, blue, 255).endVertex();
-        tessellator.getBuffer().pos(xPosition + width, yPosition + height, 0.0D).color(red, green, blue, 255).endVertex();
+        tessellator.getBuffer().pos(xPosition + width, yPosition + height, 0.0D).color(red, green, blue, 255)
+                .endVertex();
         tessellator.getBuffer().pos(xPosition + width, yPosition, 0.0D).color(red, green, blue, 255).endVertex();
         tessellator.draw();
     }

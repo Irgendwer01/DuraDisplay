@@ -1,8 +1,8 @@
 package com.caedis.duradisplay.render;
 
 import net.minecraft.client.gui.FontRenderer;
-
 import net.minecraft.client.renderer.GlStateManager;
+
 import org.lwjgl.opengl.GL11;
 
 public class TextRenderer extends OverlayRenderer {
@@ -72,5 +72,4 @@ public class TextRenderer extends OverlayRenderer {
         GL11.glScalef(2.0F, 2.0F, 2.0F);
         GL11.glPopMatrix();
     }
-
 }

@@ -20,55 +20,56 @@ public class OverlayGadgets extends OverlayDurabilityLike {
 
     public OverlayGadgets() {
         super(
-            new ConfigDurabilityLike(
-                true,
-                OverlayDurabilityLike.Style.Text,
-                DurabilityFormatter.Format.remaining,
-                2,
-                true,
-                true,
-                0xFFFFFF,
-                ColorType.Single,
-                new double[] { 30, 70 },
-                new int[] { 0xFF0000, 0xFFBDC8, 0xFFFFFF },
-                true,
-                2,
-                true) {
+                new ConfigDurabilityLike(
+                        true,
+                        OverlayDurabilityLike.Style.Text,
+                        DurabilityFormatter.Format.remaining,
+                        2,
+                        true,
+                        true,
+                        0xFFFFFF,
+                        ColorType.Single,
+                        new double[] { 30, 70 },
+                        new int[] { 0xFF0000, 0xFFBDC8, 0xFFFFFF },
+                        true,
+                        2,
+                        true) {
 
-                @Override
-                public void postLoadConfig() {
-                    configCategory.setComment("""
-                        Gadgets are items that show UseCount(remain) as default
-                        including some items whose maxDurability<100
-                        and GregTech lighters and Paint Sprayer
-                                                                        """);
-                }
+                    @Override
+                    public void postLoadConfig() {
+                        configCategory.setComment("""
+                                Gadgets are items that show UseCount(remain) as default
+                                including some items whose maxDurability<100
+                                and GregTech lighters and Paint Sprayer
+                                                                                """);
+                    }
 
-                @Override
-                public @NotNull String category() {
-                    return "gadgets";
-                }
-            });
+                    @Override
+                    public @NotNull String category() {
+                        return "gadgets";
+                    }
+                });
         addHandler("gregtech.api.items.metaitem.MetaItem", OverlayGadgets::handleGregtech);
         addHandler("buildcraft.core.item.ItemPaintbrush_BC8", OverlayGadgets::handleBCPaintBrush);
         addHandler("ic2.core.item.tool.ItemToolPainter", OverlayDurability::handleDefault);
         addHandler("WayofTime.bloodmagic.item.ItemInscriptionTool", OverlayGadgets::handleBMInscriptionTools);
         addHandler("thaumcraft.common.items.tools.ItemScribingTools", OverlayDurability::handleDefault);
-        addHandler("vazkii.botania.common.item.interaction.thaumcraft.ItemManaInkwell", OverlayDurability::handleDefault);
+        addHandler("vazkii.botania.common.item.interaction.thaumcraft.ItemManaInkwell",
+                OverlayDurability::handleDefault);
         addHandler("net.minecraft.item.Item", OverlayGadgets::handleByAllowList);
     }
 
     public static final Set<String> AllowListUnLocalized = Sets.newHashSet(
-        "item.flintAndSteel",
-        "ic2.itemWeedEx",
-        "item.for.waxCast",
-        "item.for.solderingIron",
-        "ic2.itemTreetap",
-        "item.appliedenergistics2.ToolCertusQuartzCuttingKnife",
-        "item.appliedenergistics2.ToolNetherQuartzCuttingKnife",
-        "ic2.itemToolForgeHammer",
-        "item.spellCloth",
-        "item.WoodenBrickForm");
+            "item.flintAndSteel",
+            "ic2.itemWeedEx",
+            "item.for.waxCast",
+            "item.for.solderingIron",
+            "ic2.itemTreetap",
+            "item.appliedenergistics2.ToolCertusQuartzCuttingKnife",
+            "item.appliedenergistics2.ToolNetherQuartzCuttingKnife",
+            "ic2.itemToolForgeHammer",
+            "item.spellCloth",
+            "item.WoodenBrickForm");
 
     @Override
     @NotNull
@@ -159,7 +160,8 @@ public class OverlayGadgets extends OverlayDurabilityLike {
                 }
                 return new DurabilityLikeInfo(current, max);
             }
-            default: return null;
+            default:
+                return null;
         }
     }
 }

@@ -37,12 +37,12 @@ public abstract class OverlayDurabilityLike extends Overlay<ConfigDurabilityLike
     private final @NotNull ArrayList<Pair<@NotNull Class<?>, @NotNull Function<@NotNull ItemStack, @Nullable DurabilityLikeInfo>>> handlers = new ArrayList<>();
 
     private void addHandler(@Nullable Class<?> clazz,
-        @NotNull Function<@NotNull ItemStack, @Nullable DurabilityLikeInfo> handler) {
+                            @NotNull Function<@NotNull ItemStack, @Nullable DurabilityLikeInfo> handler) {
         if (clazz != null) handlers.add(Pair.of(clazz, handler));
     }
 
     protected final void addHandler(@NotNull String className,
-        @NotNull Function<@NotNull ItemStack, @Nullable DurabilityLikeInfo> handler) {
+                                    @NotNull Function<@NotNull ItemStack, @Nullable DurabilityLikeInfo> handler) {
         try {
             addHandler(Class.forName(className), handler);
         } catch (ClassNotFoundException e) {
@@ -52,14 +52,14 @@ public abstract class OverlayDurabilityLike extends Overlay<ConfigDurabilityLike
 
     protected @NotNull DurabilityLikeInfo getDurabilityLikeInfo(@NotNull ItemStack itemStack) {
         return handlers.stream()
-            .filter(
-                p -> p.getLeft()
-                    .isInstance(itemStack.getItem()))
-            .findFirst()
-            .map(
-                classFunctionPair -> classFunctionPair.getRight()
-                    .apply(itemStack))
-            .orElse(new DurabilityLikeInfo(0, 0));
+                .filter(
+                        p -> p.getLeft()
+                                .isInstance(itemStack.getItem()))
+                .findFirst()
+                .map(
+                        classFunctionPair -> classFunctionPair.getRight()
+                                .apply(itemStack))
+                .orElse(new DurabilityLikeInfo(0, 0));
     }
 
     protected int getColor(DurabilityLikeInfo info) {
@@ -79,19 +79,19 @@ public abstract class OverlayDurabilityLike extends Overlay<ConfigDurabilityLike
         if (!config().showWhenFull && info.isFull()) return null;
         if (Objects.requireNonNull(config().style) == Style.Bar) {
             return new BarRenderer(
-                getColor(info),
-                info.percent(),
-                config().smoothBar,
-                config().barOffset,
-                config().showBackground);
+                    getColor(info),
+                    info.percent(),
+                    config().smoothBar,
+                    config().barOffset,
+                    config().showBackground);
         }
         if (Objects.requireNonNull(config().style) == Style.VerticalBar) {
             return new VerticalBarRenderer(
-                getColor(info),
-                info.percent(),
-                config().smoothBar,
-                config().barOffset,
-                config().showBackground);
+                    getColor(info),
+                    info.percent(),
+                    config().smoothBar,
+                    config().barOffset,
+                    config().showBackground);
         }
         return new TextRenderer(getValue(info), getColor(info), config().numPadPosition);
     }

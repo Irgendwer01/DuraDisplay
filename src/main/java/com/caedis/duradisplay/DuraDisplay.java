@@ -1,26 +1,28 @@
 package com.caedis.duradisplay;
 
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.caedis.duradisplay.config.DuraDisplayConfig;
+
 import zone.rong.mixinbooter.ILateMixinLoader;
 
-import java.util.Collections;
-import java.util.List;
-
 @Mod(
-    modid = Tags.MODID,
-    version = Tags.VERSION,
-    name = Tags.MODNAME,
-    acceptedMinecraftVersions = "[1.12.2]",
-    guiFactory = "com.caedis.duradisplay.config.GuiFactory",
-    acceptableRemoteVersions = "*")
+     modid = Tags.MODID,
+     version = Tags.VERSION,
+     name = Tags.MODNAME,
+     acceptedMinecraftVersions = "[1.12.2]",
+     guiFactory = "com.caedis.duradisplay.config.GuiFactory",
+     acceptableRemoteVersions = "*")
 public class DuraDisplay implements ILateMixinLoader {
 
     public static final Logger LOG = LogManager.getLogger(Tags.MODID);
@@ -29,20 +31,20 @@ public class DuraDisplay implements ILateMixinLoader {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         if (FMLCommonHandler.instance()
-            .getSide()
-            .isClient()) {
+                .getSide()
+                .isClient()) {
             DuraDisplayConfig.loadConfig();
             FMLCommonHandler.instance()
-                .bus()
-                .register(this);
+                    .bus()
+                    .register(this);
         }
         /*
-        try {
-            AppEngItemRenderHook.init();
-        } catch (NoClassDefFoundError e) {
-            DuraDisplay.LOG.info("AE2 not found, skipping AppEngItemRenderHook");
-        }
-
+         * try {
+         * AppEngItemRenderHook.init();
+         * } catch (NoClassDefFoundError e) {
+         * DuraDisplay.LOG.info("AE2 not found, skipping AppEngItemRenderHook");
+         * }
+         * 
          */
     }
 

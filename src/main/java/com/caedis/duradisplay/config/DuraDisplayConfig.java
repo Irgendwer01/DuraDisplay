@@ -38,7 +38,6 @@ public class DuraDisplayConfig {
     }
 
     public static void reloadConfigObject() {
-
         Enable = config.getBoolean("Enable", Configuration.CATEGORY_GENERAL, Enable, "Enable/disable the entire mod");
 
         for (var c : OverlayInfo.getConfigs()) {
@@ -48,6 +47,5 @@ public class DuraDisplayConfig {
         if (config.hasChanged()) {
             config.save();
         }
-
     }
 }

@@ -41,8 +41,8 @@ public final class DurabilityLikeInfo {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (DurabilityLikeInfo) obj;
-        return Double.doubleToLongBits(this.current) == Double.doubleToLongBits(that.current)
-            && Double.doubleToLongBits(this.max) == Double.doubleToLongBits(that.max);
+        return Double.doubleToLongBits(this.current) == Double.doubleToLongBits(that.current) &&
+                Double.doubleToLongBits(this.max) == Double.doubleToLongBits(that.max);
     }
 
     @Override
@@ -54,5 +54,4 @@ public final class DurabilityLikeInfo {
     public String toString() {
         return "DurabilityLikeInfo[" + "current=" + current + ", " + "max=" + max + ']';
     }
-
 }

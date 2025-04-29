@@ -29,7 +29,6 @@ public enum ColorType {
                 return config.threeColors[2];
             }
         }
-
     },
     Vanilla {
 
@@ -42,7 +41,6 @@ public enum ColorType {
         public int get(double percent, ConfigDurabilityLike config) {
             return get(percent);
         }
-
     },
     Single {
 
@@ -72,5 +70,4 @@ public enum ColorType {
     };
 
     public abstract int get(double percent, ConfigDurabilityLike config);
-
 }
