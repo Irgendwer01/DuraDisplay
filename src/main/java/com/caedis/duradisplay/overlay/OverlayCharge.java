@@ -51,7 +51,7 @@ public class OverlayCharge extends OverlayDurabilityLike {
                 }
             });
         addHandler("ic2.api.item.IElectricItem", OverlayCharge::handleIElectricItem);
-        addHandler("gregtech.api.items.toolitem.IGTTool", OverlayCharge::handleIElectricItemGT);
+        addHandler("gregtech.api.items.metaitem.MetaItem", OverlayCharge::handleIElectricItemGT);
         addHandler("gregtech.api.items.armor.IArmorItem", OverlayCharge::handleIElectricItemGT);
         addHandler("appeng.api.implementations.items.IAEItemPowerStorage", OverlayCharge::handleIAEItemPowerStorage);
         addHandler("net.minecraft.item.Item", OverlayCharge::handleEnergyStorage);

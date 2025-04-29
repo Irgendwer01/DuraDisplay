@@ -111,6 +111,7 @@ public class OverlayGadgets extends OverlayDurabilityLike {
 
     @Nullable
     public static DurabilityLikeInfo handleGregtech(@NotNull ItemStack stack) {
+        if (!stack.getItem().getRegistryName().getPath().equals("meta_item_1")) return null;
         long max = 0;
         long current = 0;
 
