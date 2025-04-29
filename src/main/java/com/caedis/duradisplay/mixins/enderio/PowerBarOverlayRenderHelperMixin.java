@@ -1,5 +1,6 @@
 package com.caedis.duradisplay.mixins.enderio;
 
+import com.caedis.duradisplay.overlay.OverlayCharge;
 import com.caedis.duradisplay.render.DurabilityRenderer;
 import crazypants.enderio.base.render.itemoverlay.PowerBarOverlayRenderHelper;
 import net.minecraft.item.ItemStack;
@@ -14,7 +15,7 @@ public class PowerBarOverlayRenderHelperMixin {
 
     @Inject(method = "render(Lnet/minecraft/item/ItemStack;IIZ)Z", at = @At("HEAD"), remap = false, cancellable = true)
     private void render(ItemStack stack, int xPosition, int yPosition, boolean alwaysShow, CallbackInfoReturnable<Boolean> cir) {
-        if (DurabilityRenderer.Execute) {
+        if (DurabilityRenderer.Execute && OverlayCharge.enabled) {
             cir.cancel();
         }
     }
