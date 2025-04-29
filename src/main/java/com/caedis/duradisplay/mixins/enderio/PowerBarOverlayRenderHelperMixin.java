@@ -16,7 +16,7 @@ public class PowerBarOverlayRenderHelperMixin {
     @Inject(method = "render(Lnet/minecraft/item/ItemStack;IIZ)Z", at = @At("HEAD"), remap = false, cancellable = true)
     private void render(ItemStack stack, int xPosition, int yPosition, boolean alwaysShow, CallbackInfoReturnable<Boolean> cir) {
         if (DurabilityRenderer.Execute && OverlayCharge.enabled) {
-            cir.cancel();
+            cir.setReturnValue(false);
         }
     }
 }

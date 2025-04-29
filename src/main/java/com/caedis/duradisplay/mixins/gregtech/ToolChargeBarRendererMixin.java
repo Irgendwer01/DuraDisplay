@@ -11,9 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.awt.*;
 
-@Mixin(value = ToolChargeBarRenderer.class)
+@Mixin(value = ToolChargeBarRenderer.class, remap = false)
 public class ToolChargeBarRendererMixin {
 
     @Inject(method = "renderDurabilityBar(DII)Z", at = @At("HEAD"), cancellable = true)
