@@ -60,7 +60,7 @@ public class OverlayDurability extends OverlayDurabilityLike {
         addHandler("thaumcraft.common.items.tools.ItemScribingTools", i -> null);
         addHandler("mekanism.common.item.ItemJetpack", OverlayDurability::handleIGasItem);
         addHandler("mekanism.common.item.ItemFlamethrower", OverlayDurability::handleIGasItem);
-        addHandler("net.minecraft.item.Item", OverlayDurability::handleDefault);
+        addHandler("net.minecraft.item.Item", OverlayDurability::handleDefault); // Needs to be last because else all other Handler won't apply
     }
 
     @Override
