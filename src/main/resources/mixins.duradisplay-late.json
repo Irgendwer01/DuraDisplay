@@ -6,7 +6,8 @@
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "enderio.PowerBarOverlayRenderHelperMixin"
+    "enderio.PowerBarOverlayRenderHelperMixin",
+    "gregtech.ToolChargeBarRendererMixin"
   ],
   "mixins": []
 }

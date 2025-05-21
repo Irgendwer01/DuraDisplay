@@ -8,8 +8,7 @@
   "client": [
     "minecraft.MixinGuiContainerCreative",
     "minecraft.MixinGuiScreen",
-    "minecraft.MixinRenderItem",
-    "gregtech.ToolChargeBarRendererMixin"
+    "minecraft.MixinRenderItem"
   ],
   "mixins": []
 }

@@ -30,4 +30,22 @@ public abstract class MixinRenderItem {
         DurabilityRenderer.Render(fontRenderer, stack0, xPosition, yPosition);
         return false;
     }
+
+    // OF compat
+    @Redirect(
+              method = "renderItemOverlayIntoGUI(Lnet/minecraft/client/gui/FontRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+              at = @At(
+                       value = "INVOKE",
+                       target = "Lnet/optifine/reflect/ReflectorForge;isItemDamaged(Lnet/minecraft/item/ItemStack;)Z"),
+              remap = false)
+    private boolean showDurabilityBar(ItemStack stack0, FontRenderer fontRenderer, ItemStack stack,
+                                      int xPosition, int yPosition, String string) {
+        var item = stack.getItem();
+        assert item != null;
+        if (!DurabilityRenderer.Execute) return item.showDurabilityBar(stack);
+        if (!DuraDisplayConfig.Enable) return item.showDurabilityBar(stack);
+
+        DurabilityRenderer.Render(fontRenderer, stack0, xPosition, yPosition);
+        return false;
+    }
 }

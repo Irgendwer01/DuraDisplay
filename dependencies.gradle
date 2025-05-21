@@ -35,4 +35,5 @@ dependencies {
     implementation rfg.deobf("curse.maven:Forestry-59751:2684780")
     implementation rfg.deobf("curse.maven:Thaumcraft-223628:2629023")
     implementation rfg.deobf("curse.maven:mekanism-268560:2835175")
+//    implementation rfg.deobf(files('libs/optifine.jar'))
 }
