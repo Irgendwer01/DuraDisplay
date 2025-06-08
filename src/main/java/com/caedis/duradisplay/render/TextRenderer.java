@@ -1,5 +1,9 @@
 package com.caedis.duradisplay.render;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -49,6 +53,14 @@ public class TextRenderer extends OverlayRenderer {
 
     @Override
     public void Render(FontRenderer fontRenderer, int xPosition, int yPosition) {
+        FloatBuffer floatBuffer = ByteBuffer.allocateDirect(16 << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+
+        GL11.glGetFloat(GL11.GL_CURRENT_COLOR, floatBuffer);
+        float r = floatBuffer.get(0);
+        float g = floatBuffer.get(1);
+        float b = floatBuffer.get(2);
+        float a = floatBuffer.get(3);
+
         GL11.glPushMatrix();
         GL11.glScalef(0.5F, 0.5F, 0.5F);
         GlStateManager.disableLighting();
@@ -71,5 +83,6 @@ public class TextRenderer extends OverlayRenderer {
         GlStateManager.enableBlend();
         GL11.glScalef(2.0F, 2.0F, 2.0F);
         GL11.glPopMatrix();
+        GlStateManager.color(r, g, b, a); // Reset Color back to original (Shoutouts to tttsaurus and his guide)
     }
 }

@@ -29,6 +29,7 @@ dependencies {
     compileOnlyApi rfg.deobf("curse.maven:EnderCore-231868:4671384")
     implementation rfg.deobf("curse.maven:CCL-242818:2779848")
     implementation rfg.deobf("curse.maven:baubles-227083:2518667")
+    implementation rfg.deobf("curse.maven:iu-372007:6596915")
     implementation rfg.deobf("curse.maven:ic2-242638:2746892")
     implementation rfg.deobf("curse.maven:grs-687577:4991701")
     implementation rfg.deobf("curse.maven:AE2UEL-570458:5047265")

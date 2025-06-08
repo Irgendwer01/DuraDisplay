@@ -10,6 +10,7 @@ import com.caedis.duradisplay.config.ConfigDurabilityLike;
 import com.caedis.duradisplay.utils.ColorType;
 import com.caedis.duradisplay.utils.DurabilityFormatter;
 import com.caedis.duradisplay.utils.DurabilityLikeInfo;
+import com.denfop.api.item.IEnergyItem;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import gregtech.api.capability.GregtechCapabilities;
@@ -51,6 +52,7 @@ public class OverlayCharge extends OverlayDurabilityLike {
                         return "charge";
                     }
                 });
+        addHandler("com.denfop.api.item.IEnergyItem", OverlayCharge::handleIEnergyItem);
         addHandler("ic2.api.item.IElectricItem", OverlayCharge::handleIElectricItem);
         addHandler("gregtech.api.items.metaitem.MetaItem", OverlayCharge::handleIElectricItemGT);
         addHandler("gregtech.api.items.toolitem.IGTTool", OverlayCharge::handleIElectricItemGT);
@@ -92,5 +94,12 @@ public class OverlayCharge extends OverlayDurabilityLike {
         IAEItemPowerStorage tool = ((IAEItemPowerStorage) stack.getItem());
         assert tool != null;
         return new DurabilityLikeInfo(tool.getAECurrentPower(stack), tool.getAEMaxPower(stack));
+    }
+
+    public static DurabilityLikeInfo handleIEnergyItem(@NotNull ItemStack stack) {
+        IEnergyItem electricItem = ((IEnergyItem) stack.getItem());
+        assert electricItem != null;
+        return new DurabilityLikeInfo(com.denfop.ElectricItem.manager.getCharge(stack),
+                electricItem.getMaxEnergy(stack));
     }
 }
